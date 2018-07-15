@@ -24,24 +24,29 @@ import java.io.InputStream
  * @author Pinger
  * @since 3/30/18 12:56 PM
  *
- * Glide 配置
+ * Glide 的Module配置，设置glide的全局属性
  */
 @GlideModule
 class GlideConfigModule : AppGlideModule() {
 
     override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
         super.registerComponents(context, glide, registry)
+        /**
+         * 替换Glide的请求方式，因为要监听图片的加载进度，使用okhttp来加载
+         */
         registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(ProgressEngine.getOkHttpClient()))
     }
 
-    /** 配置Glide常用属性 */
+    /**
+     * 配置Glide常用属性
+     */
     override fun applyOptions(context: Context, builder: GlideBuilder) {
-        builder.setDefaultRequestOptions(RequestOptions().format(DecodeFormat.PREFER_ARGB_8888))
         // 设置Glide缓存目录
         val cacheDir = ImageGoUtils.getImageCacheDir(context)
 
-        val cache = DiskLruCacheWrapper.create(cacheDir, DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE.toLong())// 250 MB
+        val cache = DiskLruCacheWrapper.create(cacheDir, DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE.toLong())
         builder.setDiskCache { cache }
+
         // 设置memory和Bitmap池的大小
         val calculator = MemorySizeCalculator.Builder(context).build()
         val defaultMemoryCacheSize = calculator.memoryCacheSize

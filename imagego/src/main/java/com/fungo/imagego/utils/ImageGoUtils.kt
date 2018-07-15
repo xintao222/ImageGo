@@ -16,13 +16,19 @@ import java.util.concurrent.Executors
 object ImageGoUtils {
 
     private val mHandler: Handler = Handler(Looper.getMainLooper())
+    var DEBUG = true
 
-    /** 是否是GIF图 */
+
+    /**
+     * 是否是GIF图
+     */
     fun isGif(url: String?): Boolean {
         return !TextUtils.isEmpty(url) && url!!.endsWith(ImageGoConstant.IMAGE_GIF, true)
     }
 
-    /** 单位转换 */
+    /**
+     * 单位转换
+     */
     fun dp2px(context: Context?, dipValue: Float): Float {
         if (context == null) {
             return dipValue
@@ -32,22 +38,30 @@ object ImageGoUtils {
     }
 
 
-    /** 运行在主线程 */
+    /**å
+     * 运行在主线程
+     */
     fun runOnUIThread(run: Runnable) {
         mHandler.post(run)
     }
 
-    /** 运行在子线程 */
+    /**
+     * 运行在子线程
+     */
     fun runOnSubThread(run: Runnable) {
         singlePool.execute(run)
     }
 
-    /** 获取一个单线程池，所有任务将会被按照加入的顺序执行，免除了同步开销的问题  */
-    val singlePool: ExecutorService
+    /**
+     * 获取一个单线程池，所有任务将会被按照加入的顺序执行，免除了同步开销的问题
+     */
+    private val singlePool: ExecutorService
         get() = Executors.newSingleThreadExecutor()
 
 
-    /** 获取项目数据目录的路径字符串 */
+    /**
+     * 获取项目数据目录的路径字符串
+     */
     private fun getAppDataPath(context: Context?): String {
         val dataPath: String = if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED || context == null) {
             (Environment.getExternalStorageDirectory()
@@ -63,7 +77,9 @@ object ImageGoUtils {
         return dataPath
     }
 
-    /** 获取图片存储的路径 */
+    /**
+     * 获取图片存储的路径
+     */
     fun getImageSavePath(context: Context?): String {
         val path = getAppDataPath(context) + File.separator + ImageGoConstant.IMAGE_PATH + File.separator
         createOrExistsDir(path)
@@ -71,7 +87,9 @@ object ImageGoUtils {
     }
 
 
-    /**　获取图片缓存目录　*/
+    /**　
+     * 获取图片缓存目录
+     */
     fun getImageCacheDir(context: Context?): File {
         return if (Environment.getExternalStorageState() == Environment.MEDIA_UNMOUNTED) {
             // 没有存储卡
@@ -123,6 +141,9 @@ object ImageGoUtils {
         }
     }
 
+    /**
+     * 展示Toast
+     */
     fun showToast(context: Context?, content: String) {
         if (context == null) {
             return
@@ -132,6 +153,9 @@ object ImageGoUtils {
         })
     }
 
+    /**
+     * 获取图片缓存的大小
+     */
     fun getImageCacheSize(context: Context?): String {
         return try {
             val file = ImageGoUtils.getImageCacheDir(context)
@@ -146,7 +170,9 @@ object ImageGoUtils {
         }
     }
 
-    /** 转换文件大小 */
+    /**
+     * 转换文件大小
+     */
     private fun formatFileSize(fileSize: Long): String {
         val df = DecimalFormat("#")
         val wrongSize = "0M"
@@ -161,7 +187,20 @@ object ImageGoUtils {
         }
     }
 
+
+    /**
+     * 打印日志
+     */
     fun log(msg: String) {
-        Log.d("ImageGo", msg)
+        if (DEBUG) {
+            Log.d("ImageGo", msg)
+        }
+    }
+
+    /**
+     * 设置当前是不是开发模式
+     */
+    fun setDebug(isDebug: Boolean) {
+        DEBUG = isDebug
     }
 }

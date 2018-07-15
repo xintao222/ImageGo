@@ -8,9 +8,15 @@ import android.graphics.Bitmap
  */
 interface OnImageListener {
 
-    /** 图片加载成功 */
+    /**
+     * 图片加载成功
+     * @param bitmap 加载成功生成的bitmap对象
+     */
     fun onSuccess(bitmap: Bitmap?)
 
-    /** 图片加载失败 */
-    fun onFail(msg: String)
+    /**
+     * 图片加载失败
+     * @param msg 加载失败的原因
+     */
+    fun onFail(msg: String?)
 }

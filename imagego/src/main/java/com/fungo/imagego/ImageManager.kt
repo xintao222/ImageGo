@@ -1,11 +1,10 @@
 package com.fungo.imagego
 
 import android.content.Context
-import android.graphics.Bitmap
 import android.text.TextUtils
 import android.widget.ImageView
-import com.fungo.imagego.create.ImageGoFactory
 import com.fungo.imagego.create.ImageGoStrategy
+import com.fungo.imagego.glide.GlideImageGoStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
@@ -20,7 +19,7 @@ import com.fungo.imagego.utils.ImageGoUtils
 class ImageManager {
 
     /**
-     * 单利对象（恶汉式）
+     * 单利对象
      */
     companion object {
         @JvmStatic
@@ -30,15 +29,15 @@ class ImageManager {
     /***
      * 图片的加载策略，抽取常用的图片加载方法到基类里，由具体的去实现，使用时只需要基类接口
      */
-    private lateinit var mImageStrategy: ImageGoStrategy
+    private var mImageStrategy: ImageGoStrategy? = null
 
 
     /**
      * 初始化加载策略，在Application中设置
      * 目前可提供选择的策略有#GlideImageGoFactory和#PicassoImageGoFactory两种
      */
-    fun setImageGoFactory(factory: ImageGoFactory) {
-        mImageStrategy = factory.create()
+    fun setImageGoFactory(strategy: ImageGoStrategy) {
+        mImageStrategy = strategy
     }
 
     /**
@@ -52,11 +51,13 @@ class ImageManager {
      * 普通图片，没有加载的渐变动画
      */
     fun loadImageNoFade(url: String?, imageView: ImageView?) {
-        mImageStrategy.loadImageNoFade(url, imageView)
+        checkStrategy()
+        mImageStrategy!!.loadImageNoFade(url, imageView)
     }
 
     fun loadBitmap(context: Context?, url: String?, listener: OnImageListener?) {
-        return mImageStrategy.loadBitmapImage(context, url, listener)
+        checkStrategy()
+        return mImageStrategy!!.loadBitmapImage(context, url, listener)
     }
 
     /**
@@ -66,10 +67,11 @@ class ImageManager {
         if (TextUtils.isEmpty(url)) {
             listener?.onFail(ImageGoConstant.IMAGE_FAILED_URL_EMPTY)
         } else {
+            checkStrategy()
             if (ImageGoUtils.isGif(url)) {
-                mImageStrategy.loadGifImage(url, imageView, listener)
+                mImageStrategy!!.loadGifImage(url, imageView, listener)
             } else {
-                mImageStrategy.loadImage(url, imageView, listener)
+                mImageStrategy!!.loadImage(url, imageView, listener)
             }
         }
     }
@@ -86,20 +88,34 @@ class ImageManager {
      * 保存图片到本地
      */
     fun saveImage(context: Context?, url: String?, listener: OnImageSaveListener?) {
-        mImageStrategy.saveImage(context, url, listener)
+        checkStrategy()
+        mImageStrategy?.saveImage(context, url, listener)
     }
 
     /**
      * 清除图片缓存
      */
     fun clearImageCache(context: Context?) {
-        mImageStrategy.clearImageCache(context)
+        checkStrategy()
+        mImageStrategy!!.clearImageCache(context)
     }
 
     /**
      * 图片缓存大小
      */
     fun getImageCacheSize(context: Context?): String {
-        return mImageStrategy.getCacheSize(context)
+        checkStrategy()
+        return mImageStrategy!!.getCacheSize(context)
+    }
+
+
+    /**
+     * 检查当前的策略是不是空的，如果是空的则默认使用Glide加载
+     */
+    private fun checkStrategy() {
+        if (mImageStrategy == null) {
+            ImageGoUtils.log(ImageGoConstant.ERROR_STRATEGY_NULL)
+            mImageStrategy = GlideImageGoStrategy()
+        }
     }
 }

@@ -34,13 +34,13 @@ object ProgressEngine {
 
     private val mProgressListener = object : OnProgressListener {
 
-        override fun onProgress(bytesRead: Long, contentLength: Long, isDone: Boolean) {
+        override fun onProgress(bytesRead: Long, contentLength: Long, isFinish: Boolean) {
             if (mListeners == null || mListeners.size == 0) return
 
             for (i in 0 until mListeners.size) {
                 val listener = mListeners[i]
                 val progressListener = listener.get()
-                progressListener?.onProgress(bytesRead, contentLength, isDone)
+                progressListener?.onProgress(bytesRead, contentLength, isFinish)
             }
         }
     }

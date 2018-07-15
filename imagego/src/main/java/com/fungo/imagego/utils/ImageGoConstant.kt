@@ -13,5 +13,6 @@ object ImageGoConstant {
     const val IMAGE_PLACE_HOLDER_COLOR = "#F2F2F2"
 
     const val IMAGE_FAILED_URL_EMPTY = "----> image go load failed：url is empty."
+    const val ERROR_STRATEGY_NULL = "图片加载策略为null，已使用默认策略，请在Application中设置图片加载策略"
 
 }
