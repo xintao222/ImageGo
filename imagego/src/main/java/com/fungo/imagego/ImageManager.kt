@@ -36,7 +36,7 @@ class ImageManager {
      * 初始化加载策略，在Application中设置
      * 目前可提供选择的策略有#GlideImageGoFactory和#PicassoImageGoFactory两种
      */
-    fun setImageGoFactory(strategy: ImageGoStrategy) {
+    fun setImageGoStrategy(strategy: ImageGoStrategy) {
         mImageStrategy = strategy
     }
 
@@ -64,15 +64,11 @@ class ImageManager {
      * 加载图片，根据图片后缀是否以.GIF结尾，如果是则加载GIF图片
      */
     fun loadImage(url: String?, imageView: ImageView?, listener: OnImageListener?) {
-        if (TextUtils.isEmpty(url)) {
-            listener?.onFail(ImageGoConstant.IMAGE_FAILED_URL_EMPTY)
+        checkStrategy()
+        if (ImageGoUtils.isGif(url)) {
+            mImageStrategy!!.loadGifImage(url, imageView, listener)
         } else {
-            checkStrategy()
-            if (ImageGoUtils.isGif(url)) {
-                mImageStrategy!!.loadGifImage(url, imageView, listener)
-            } else {
-                mImageStrategy!!.loadImage(url, imageView, listener)
-            }
+            mImageStrategy!!.loadImage(url, imageView, listener)
         }
     }
 

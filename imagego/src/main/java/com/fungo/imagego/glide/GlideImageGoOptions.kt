@@ -10,12 +10,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
  *
  * 图片加载库的配置，封装原始加载配置属性，进行转换
  */
-class GlideOptions(private val builder: Builder) {
+class GlideImageGoOptions(private val builder: Builder) {
 
     /**
      * 解析配置
      */
-    fun parseBuilder(config: GlideOptions): Builder {
+    fun parseBuilder(config: GlideImageGoOptions): Builder {
         val builder = Builder()
         builder.placeHolderResId = config.getPlaceHolderResId()
         builder.placeHolderDrawable = config.getPlaceHolderDrawable()
@@ -195,8 +195,8 @@ class GlideOptions(private val builder: Builder) {
             return this
         }
 
-        fun build(): GlideOptions {
-            return GlideOptions(this)
+        fun build(): GlideImageGoOptions {
+            return GlideImageGoOptions(this)
         }
     }
 

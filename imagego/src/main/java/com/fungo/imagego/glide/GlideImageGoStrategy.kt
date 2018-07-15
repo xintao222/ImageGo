@@ -40,12 +40,12 @@ class GlideImageGoStrategy : ImageGoStrategy {
     /**
      * 默认的配置,可以手动配置
      */
-    private val defaultOptions = GlideOptions
+    private val defaultOptions = GlideImageGoOptions
             .Builder()
             .setAsBitmap(true)
             .setPlaceHolderDrawable(ColorDrawable(Color.parseColor(ImageGoConstant.IMAGE_PLACE_HOLDER_COLOR)))
-            .setDiskCacheStrategy(GlideOptions.DiskCache.AUTOMATIC)
-            .setPriority(GlideOptions.LoadPriority.NORMAL)
+            .setDiskCacheStrategy(GlideImageGoOptions.DiskCache.AUTOMATIC)
+            .setPriority(GlideImageGoOptions.LoadPriority.NORMAL)
             .isCrossFade(true)
             .build()
 
@@ -172,7 +172,7 @@ class GlideImageGoStrategy : ImageGoStrategy {
         }
     }
 
-    private fun loadImage(obj: Any?, imageView: ImageView?, config: GlideOptions?, listener: OnImageListener?) {
+    private fun loadImage(obj: Any?, imageView: ImageView?, config: GlideImageGoOptions?, listener: OnImageListener?) {
         if (obj == null) {
             listener?.onFail("GlideImageGoStrategy：image request url is null...")
             return
@@ -195,7 +195,7 @@ class GlideImageGoStrategy : ImageGoStrategy {
             listener?.onFail("GlideImageGoStrategy：context is null...")
             return
         }
-        val glideConfig: GlideOptions = config ?: defaultOptions
+        val glideConfig: GlideImageGoOptions = config ?: defaultOptions
         try {
             when {
                 glideConfig.isAsGif() -> {
@@ -220,7 +220,7 @@ class GlideImageGoStrategy : ImageGoStrategy {
     /**
      * 设置bitmap属性
      */
-    private fun buildBitmap(context: Context, obj: Any, glideConfig: GlideOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
+    private fun buildBitmap(context: Context, obj: Any, glideConfig: GlideImageGoOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
         var builder = bitmapBuilder
         // 渐变展示
         if (glideConfig.isCrossFade()) {
@@ -257,7 +257,7 @@ class GlideImageGoStrategy : ImageGoStrategy {
     /**
      * 设置Gift属性
      */
-    private fun buildGift(context: Context, obj: Any, glideConfig: GlideOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
+    private fun buildGift(context: Context, obj: Any, glideConfig: GlideImageGoOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
         var builder = gifBuilder
 
         // 渐变展示
@@ -293,7 +293,7 @@ class GlideImageGoStrategy : ImageGoStrategy {
     /**
      * 设置图片加载选项并且加载图片
      */
-    private fun buildOptions(obj: Any, glideConfig: GlideOptions): RequestOptions {
+    private fun buildOptions(obj: Any, glideConfig: GlideImageGoOptions): RequestOptions {
         val options = RequestOptions()
 
         // 是否跳过内存缓存
