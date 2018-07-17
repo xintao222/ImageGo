@@ -2,7 +2,7 @@ package com.fungo.imagego.picasso
 
 import android.content.Context
 import android.widget.ImageView
-import com.fungo.imagego.create.ImageGoStrategy
+import com.fungo.imagego.create.ImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import java.io.File
@@ -12,7 +12,7 @@ import java.io.File
  * @since 2018/5/13 下午4:13
  *
  */
-class PicassoImageGoStrategy : ImageGoStrategy {
+class PicassoImageStrategy : ImageStrategy {
 
     override fun loadBitmapImage(context: Context?, url: String?, listener: OnImageListener?) {
     }

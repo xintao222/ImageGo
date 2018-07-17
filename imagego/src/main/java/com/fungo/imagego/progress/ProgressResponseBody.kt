@@ -1,7 +1,7 @@
 package com.fungo.imagego.progress
 
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.utils.ImageGoUtils
+import com.fungo.imagego.utils.ImageUtils
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
@@ -50,7 +50,7 @@ class ProgressResponseBody(private val responseBody: ResponseBody?, val progress
             override fun read(sink: Buffer, byteCount: Long): Long {
                 val bytesRead = super.read(sink, byteCount)
                 totalBytesRead += if (bytesRead != (-1).toLong()) bytesRead else 0
-                ImageGoUtils.runOnUIThread(Runnable {
+                ImageUtils.runOnUIThread(Runnable {
                     progressListener.onProgress(totalBytesRead, contentLength(), bytesRead == (-1).toLong())
                 })
                 return bytesRead

@@ -6,7 +6,7 @@ package com.fungo.imagego.utils
  * 图片加载常用字符常量
  */
 
-object ImageGoConstant {
+object ImageConstant {
 
     const val IMAGE_GIF = ".GIF"
     const val IMAGE_PATH = "Fungo"

@@ -2,7 +2,7 @@ package com.fungo.sample.app
 
 import android.app.Application
 import com.fungo.imagego.ImageManager
-import com.fungo.imagego.glide.GlideImageGoStrategy
+import com.fungo.imagego.glide.GlideImageStrategy
 
 /**
  * @author Pinger
@@ -14,7 +14,7 @@ class DemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        ImageManager.instance.setImageGoStrategy(GlideImageGoStrategy())
+        ImageManager.instance.setImageGoStrategy(GlideImageStrategy())
     }
 
 }

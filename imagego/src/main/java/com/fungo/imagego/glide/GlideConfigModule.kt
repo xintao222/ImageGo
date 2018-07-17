@@ -6,7 +6,6 @@ import com.bumptech.glide.GlideBuilder
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
 import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
-import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.engine.bitmap_recycle.LruBitmapPool
 import com.bumptech.glide.load.engine.cache.DiskCache
 import com.bumptech.glide.load.engine.cache.DiskLruCacheWrapper
@@ -14,9 +13,8 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.request.RequestOptions
 import com.fungo.imagego.progress.ProgressEngine
-import com.fungo.imagego.utils.ImageGoUtils
+import com.fungo.imagego.utils.ImageUtils
 import java.io.InputStream
 
 
@@ -42,7 +40,7 @@ class GlideConfigModule : AppGlideModule() {
      */
     override fun applyOptions(context: Context, builder: GlideBuilder) {
         // 设置Glide缓存目录
-        val cacheDir = ImageGoUtils.getImageCacheDir(context)
+        val cacheDir = ImageUtils.getImageCacheDir(context)
 
         val cache = DiskLruCacheWrapper.create(cacheDir, DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE.toLong())
         builder.setDiskCache { cache }

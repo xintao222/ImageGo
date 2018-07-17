@@ -10,12 +10,12 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
  *
  * 图片加载库的配置，封装原始加载配置属性，进行转换
  */
-class GlideImageGoOptions(private val builder: Builder) {
+class GlideImageOptions(private val builder: Builder) {
 
     /**
      * 解析配置
      */
-    fun parseBuilder(config: GlideImageGoOptions): Builder {
+    fun parseBuilder(config: GlideImageOptions): Builder {
         val builder = Builder()
         builder.placeHolderResId = config.getPlaceHolderResId()
         builder.placeHolderDrawable = config.getPlaceHolderDrawable()
@@ -195,8 +195,8 @@ class GlideImageGoOptions(private val builder: Builder) {
             return this
         }
 
-        fun build(): GlideImageGoOptions {
-            return GlideImageGoOptions(this)
+        fun build(): GlideImageOptions {
+            return GlideImageOptions(this)
         }
     }
 
@@ -211,7 +211,7 @@ class GlideImageGoOptions(private val builder: Builder) {
         NONE(DiskCacheStrategy.NONE),
 
         /**
-         * 根据原始图片数据和资源编码策略来自动选择磁盘缓存策略
+         * 根据原始图片数据和资源编码策略来自动选择磁盘缓存策略，需要写入权限
          */
         AUTOMATIC(DiskCacheStrategy.AUTOMATIC),
 
@@ -221,12 +221,12 @@ class GlideImageGoOptions(private val builder: Builder) {
         RESOURCE(DiskCacheStrategy.RESOURCE),
 
         /**
-         * 在资源解码前就将原始数据写入磁盘缓存
+         * 在资源解码前就将原始数据写入磁盘缓存，需要写入权限
          */
         DATA(DiskCacheStrategy.DATA),
 
         /**
-         * 使用DATA和RESOURCE缓存远程数据，仅使用RESOURCE来缓存本地数据
+         * 使用DATA和RESOURCE缓存远程数据，仅使用RESOURCE来缓存本地数据，需要写入权限
          */
         ALL(DiskCacheStrategy.ALL)
     }

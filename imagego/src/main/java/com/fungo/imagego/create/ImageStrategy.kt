@@ -15,7 +15,7 @@ import java.io.File
  * 图片加载策略基类，定义接口
  */
 
-interface ImageGoStrategy {
+interface ImageStrategy {
 
     /**
      * 加载图片，使用默认的配置

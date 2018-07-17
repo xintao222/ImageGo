@@ -1,6 +1,8 @@
 package com.fungo.imagego.utils
 
 import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
@@ -13,7 +15,7 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
 
-object ImageGoUtils {
+object ImageUtils {
 
     private val mHandler: Handler = Handler(Looper.getMainLooper())
     var DEBUG = true
@@ -23,7 +25,7 @@ object ImageGoUtils {
      * 是否是GIF图
      */
     fun isGif(url: String?): Boolean {
-        return !TextUtils.isEmpty(url) && url!!.endsWith(ImageGoConstant.IMAGE_GIF, true)
+        return !TextUtils.isEmpty(url) && url!!.endsWith(ImageConstant.IMAGE_GIF, true)
     }
 
     /**
@@ -81,7 +83,7 @@ object ImageGoUtils {
      * 获取图片存储的路径
      */
     fun getImageSavePath(context: Context?): String {
-        val path = getAppDataPath(context) + File.separator + ImageGoConstant.IMAGE_PATH + File.separator
+        val path = getAppDataPath(context) + File.separator + ImageConstant.IMAGE_PATH + File.separator
         createOrExistsDir(path)
         return path
     }
@@ -148,7 +150,7 @@ object ImageGoUtils {
         if (context == null) {
             return
         }
-        ImageGoUtils.runOnUIThread(Runnable {
+        ImageUtils.runOnUIThread(Runnable {
             Toast.makeText(context, content, Toast.LENGTH_SHORT).show()
         })
     }
@@ -158,7 +160,7 @@ object ImageGoUtils {
      */
     fun getImageCacheSize(context: Context?): String {
         return try {
-            val file = ImageGoUtils.getImageCacheDir(context)
+            val file = ImageUtils.getImageCacheDir(context)
             var blockSize: Long = 0
             file.listFiles().forEach {
                 blockSize += it.length()
@@ -202,5 +204,17 @@ object ImageGoUtils {
      */
     fun setDebug(isDebug: Boolean) {
         DEBUG = isDebug
+    }
+
+
+    /**
+     * 检查是否有某一项权限
+     */
+    fun checkPermission(context: Context?, permission: String): Boolean {
+        return if (Build.VERSION.SDK_INT >= 23) {
+            context?.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
+        } else {
+            context?.packageManager?.checkPermission(permission, context.packageName) == PackageManager.PERMISSION_GRANTED
+        }
     }
 }
