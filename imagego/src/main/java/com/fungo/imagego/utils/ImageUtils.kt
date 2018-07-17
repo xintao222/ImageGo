@@ -194,23 +194,6 @@ object ImageUtils {
 
 
     /**
-     * 打印日志
-     */
-    fun log(msg: String) {
-        if (DEBUG) {
-            Log.d("ImageGo", msg)
-        }
-    }
-
-    /**
-     * 设置当前是不是开发模式
-     */
-    fun setDebug(isDebug: Boolean) {
-        DEBUG = isDebug
-    }
-
-
-    /**
      * 检查是否有某一项权限
      */
     fun checkPermission(context: Context?, permission: String): Boolean {
@@ -220,4 +203,34 @@ object ImageUtils {
             context?.packageManager?.checkPermission(permission, context.packageName) == PackageManager.PERMISSION_GRANTED
         }
     }
+
+
+
+    /**
+     * 打印日志
+     */
+    fun logD(msg: String) {
+        if (DEBUG) {
+            Log.d("ImageGo", "-----> $msg")
+        }
+    }
+
+    /**
+     * 打印日志
+     */
+    fun logE(msg: String) {
+        if (DEBUG) {
+            Log.e("ImageGo", "-----> $msg")
+        }
+    }
+
+
+    /**
+     * 设置当前是不是开发模式
+     */
+    fun setDebug(isDebug: Boolean) {
+        DEBUG = isDebug
+    }
+
+
 }

@@ -73,91 +73,149 @@ class GlideImageStrategy : ImageStrategy {
     }
 
 
+    /**
+     * 加载bitmap
+     * 在主线程调用
+     */
     override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?) {
         if (context == null || any == null) {
-            listener?.onFail("context or url is null...")
+            listener?.onFail(ImageConstant.ERROR_LOAD_NULL_CONTEXT_ANY)
+            ImageUtils.logD(ImageConstant.ERROR_LOAD_NULL_CONTEXT_ANY)
             return
         }
+        // submit方法要在子线程调用
         ImageUtils.runOnSubThread(Runnable {
             val bitmap = Glide.with(context).asBitmap().load(any).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
             ImageUtils.runOnUIThread(Runnable {
+                // 加载成功在主线程回调
                 listener?.onSuccess(bitmap)
             })
         })
     }
 
+    /**
+     * 保存图片到本地
+     * 可以在主线程调用
+     */
     override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
+        if (context == null || any == null) {
+            listener?.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            return
+        }
         ImageUtils.runOnSubThread(Runnable {
             try {
-                if (context != null && any != null) {
-                    val suffix = if (ImageUtils.isGif(any)) {
-                        "${System.currentTimeMillis()}.gif"
-                    } else {
-                        "${System.currentTimeMillis()}.jpg"
-                    }
-
-                    val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
-                    val imageFile = download(context, any)
-                    val isCopySuccess = ImageUtils.copyFile(imageFile, destFile)
-
-                    // 最后通知图库更新
-                    context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                            Uri.fromFile(destFile)))
-                    ImageUtils.runOnUIThread(Runnable {
-                        if (isCopySuccess) {
-                            listener?.onSaveSuccess("图片已保存至 " + ImageUtils.getImageSavePath(context))
-                        } else {
-                            listener?.onSaveFail("保存失败")
-                        }
-                    })
+                // 图片后缀
+                val suffix = if (ImageUtils.isGif(any)) {
+                    System.currentTimeMillis().toString() + ImageConstant.IMAGE_GIF
+                } else {
+                    System.currentTimeMillis().toString() + ImageConstant.IMAGE_JPG
                 }
+
+                // 保存的位置
+                val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
+                // 要保存的原图
+                val imageFile = download(context, any)
+                // 进行保存
+                val isCopySuccess = ImageUtils.copyFile(imageFile, destFile)
+
+                // 最后通知图库更新
+                context.sendBroadcast(Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                        Uri.fromFile(destFile)))
+                // 主线程回调
+                ImageUtils.runOnUIThread(Runnable {
+                    if (isCopySuccess) {
+                        listener?.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
+                    } else {
+                        listener?.onSaveFail(ImageConstant.SAVE_FAIL)
+                    }
+                })
             } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
-                    listener?.onSaveFail("保存失败")
+                    listener?.onSaveFail(ImageConstant.SAVE_FAIL)
+                    ImageUtils.logE(ImageConstant.SAVE_FAIL + ": " + e.message)
                 })
             }
         })
     }
 
 
+    /**
+     * 清理磁盘缓存
+     * 可以主线程调用
+     */
     override fun clearImageDiskCache(context: Context?) {
         if (context != null) {
             Glide.get(context).clearDiskCache()
+        }else{
+            ImageUtils.logD(ImageConstant.CLEAR_NULL_CONTEXT)
         }
     }
 
     /**
-     * 清除内存缓存，只能在主线程调用本方法
+     * 清除内存缓存
+     * 只能在主线程调用
      */
     override fun clearImageMemoryCache(context: Context?) {
         if (context != null) {
             Glide.get(context).clearMemory()
+        }else{
+            ImageUtils.logD(ImageConstant.CLEAR_NULL_CONTEXT)
         }
     }
 
 
     /**
      * 获取本地缓存大小
+     * 同步方法
      */
     override fun getCacheSize(context: Context?): String {
         return ImageUtils.getImageCacheSize(context)
     }
 
+    /**
+     * 重新加载
+     */
     override fun resumeRequests(context: Context?) {
         if (context != null) {
             Glide.with(context).resumeRequests()
         }
     }
 
+
+    /**
+     * 暂停加载
+     */
     override fun pauseRequests(context: Context?) {
         if (context != null) {
             Glide.with(context).pauseRequests()
         }
     }
 
+
+    /**
+     * 缓存图片文件
+     */
+    override fun download(context: Context, any: Any?): File {
+        return Glide.with(context).download(any).submit().get()
+    }
+
+    /**
+     * Glide加载图片的主要方法
+     * @param obj 图片资源
+     * @param view 图片展示控件
+     * @param config 图片配置
+     * @param listener 图片加载回调
+     */
     private fun loadImage(obj: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
-        if (obj == null) {
+        if (obj == null||view == null) {
             listener?.onFail("GlideImageStrategy：image request url is null...")
+            return
+        }
+
+        val context = view.context
+        if (context == null) {
+            listener?.onFail("GlideImageStrategy：context is null...")
             return
         }
 
@@ -168,16 +226,6 @@ class GlideImageStrategy : ImageStrategy {
             }
         }
 
-        if (view == null) {
-            listener?.onFail("GlideImageStrategy：imageView is null...")
-            return
-        }
-
-        val context = view.context
-        if (context == null) {
-            listener?.onFail("GlideImageStrategy：context is null...")
-            return
-        }
         try {
             if (config.asGif) {
                 val gifBuilder = Glide.with(context).asGif().load(obj)
@@ -273,7 +321,7 @@ class GlideImageStrategy : ImageStrategy {
     }
 
     /**
-     * 设置图片加载选项并且加载图片
+     * 设置图片加载选项，返回请求对象
      */
     private fun buildOptions(context: Context, obj: Any, config: ImageConfig): RequestOptions {
         val options = RequestOptions()
@@ -322,7 +370,6 @@ class GlideImageStrategy : ImageStrategy {
                         .error(config.placeHolderDrawable)
         }
 
-
         // Tag
         val tag = config.tag
         if (tag != null) {
@@ -334,10 +381,4 @@ class GlideImageStrategy : ImageStrategy {
         return options
     }
 
-    /**
-     * 获取图片的缓存文件
-     */
-    override fun download(context: Context, any: Any?): File {
-        return Glide.with(context).download(any).submit().get()
-    }
 }

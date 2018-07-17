@@ -2,12 +2,12 @@ package com.fungo.imagego
 
 import android.content.Context
 import android.widget.ImageView
-import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
 import com.fungo.imagego.progress.ProgressEngine
+import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
 import com.fungo.imagego.utils.ImageUtils
 
@@ -109,8 +109,15 @@ class ImageManager {
      */
     private fun checkStrategy() {
         if (mImageStrategy == null) {
-            ImageUtils.log(ImageConstant.ERROR_STRATEGY_NULL)
+            ImageUtils.logD(ImageConstant.ERROR_LOAD_NULL_STRATEGY)
             mImageStrategy = GlideImageStrategy()
         }
+    }
+
+    /**
+     * 设置是否打印日志，默认打印日志
+     */
+    fun setDebug(debug:Boolean){
+        ImageUtils.setDebug(debug)
     }
 }
