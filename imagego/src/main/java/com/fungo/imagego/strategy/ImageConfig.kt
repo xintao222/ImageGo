@@ -1,6 +1,7 @@
 package com.fungo.imagego.strategy
 
 import android.graphics.drawable.Drawable
+import android.support.annotation.ColorInt
 
 /**
  * @author Pinger
@@ -81,7 +82,7 @@ class ImageConfig private constructor() {
     /**
      * 圆形是否带边框
      */
-    var isCircleBorder: Boolean = false
+    var circleBorderWidth: Int = 0
 
     /**
      * 圆形边框的颜色
@@ -92,6 +93,12 @@ class ImageConfig private constructor() {
      * 模糊特效
      */
     var isBlur: Boolean = false
+
+
+    /**
+     * 是否圆角
+     */
+    var isRounder:Boolean = false
 
 
     /**
@@ -157,6 +164,22 @@ class ImageConfig private constructor() {
 
         fun setOverideSize(width: Int, height: Int) {
             config.size = OverrideSize(width, height)
+        }
+
+        fun setCircle(isCircle: Boolean) {
+            config.isCircle = isCircle
+        }
+
+        fun setCircleBorderWidth(width: Int) {
+            config.circleBorderWidth = width
+        }
+
+        fun setCircleBorderColor(@ColorInt color: Int) {
+            config.circleBorderColor = color
+        }
+
+        fun setBlur(blur: Boolean) {
+            config.isBlur = blur
         }
 
         fun build(): ImageConfig {

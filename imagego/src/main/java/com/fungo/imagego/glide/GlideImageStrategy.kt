@@ -22,6 +22,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.fungo.imagego.glide.transform.BlurTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.strategy.ImageConfig
@@ -37,7 +38,6 @@ import java.io.File
  *
  * 使用Glide加载图片策略
  * 更多Glide使用请看官方使用手册[https://muyangmin.github.io/glide-docs-cn/doc/caching.html]
- *
  */
 class GlideImageStrategy : ImageStrategy {
 
@@ -52,6 +52,10 @@ class GlideImageStrategy : ImageStrategy {
             .setCrossFade(true)
             .setAsGif(false)
 
+
+    /**
+     * 加载图片
+     */
     override fun loadImage(url: String?, view: View?) {
         loadImage(url, view, null)
     }
@@ -74,7 +78,7 @@ class GlideImageStrategy : ImageStrategy {
 
 
     /**
-     * 加载bitmap
+     * 加载图片返回bitmap
      * 在主线程调用
      */
     override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?) {
@@ -147,7 +151,7 @@ class GlideImageStrategy : ImageStrategy {
     override fun clearImageDiskCache(context: Context?) {
         if (context != null) {
             Glide.get(context).clearDiskCache()
-        }else{
+        } else {
             ImageUtils.logD(ImageConstant.CLEAR_NULL_CONTEXT)
         }
     }
@@ -159,7 +163,7 @@ class GlideImageStrategy : ImageStrategy {
     override fun clearImageMemoryCache(context: Context?) {
         if (context != null) {
             Glide.get(context).clearMemory()
-        }else{
+        } else {
             ImageUtils.logD(ImageConstant.CLEAR_NULL_CONTEXT)
         }
     }
@@ -209,7 +213,7 @@ class GlideImageStrategy : ImageStrategy {
      */
     private fun loadImage(any: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
         // any和view判空
-        if (any == null||view == null) {
+        if (any == null || view == null) {
             listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
             ImageUtils.logD(ImageConstant.LOAD_NULL_ANY_VIEW)
             return
@@ -243,7 +247,7 @@ class GlideImageStrategy : ImageStrategy {
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
             }
         } catch (e: Exception) {
-            listener?.onFail(ImageConstant.LOAD_ERROR)
+            listener?.onFail(ImageConstant.LOAD_ERROR + "：" + e.message)
             if (view is ImageView) {
                 view.setImageResource(config.errorResId)
             }
@@ -275,7 +279,7 @@ class GlideImageStrategy : ImageStrategy {
         // 加载监听
         builder.listener(object : RequestListener<Bitmap> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
-                listener?.onFail(e?.message ?: "GlideImageStrategy：image load fail")
+                listener?.onFail(e?.message)
                 return false
             }
 
@@ -308,7 +312,7 @@ class GlideImageStrategy : ImageStrategy {
         // 加载监听
         builder.listener(object : RequestListener<GifDrawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
-                listener?.onFail(e?.message ?: "GlideImageStrategy：Gif load fail")
+                listener?.onFail(e?.message)
                 return false
             }
 

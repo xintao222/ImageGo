@@ -12,6 +12,8 @@ import java.security.MessageDigest
  * @param context　上下文
  * @param borderColor 边框颜色
  * @param borderWidth 边框宽度
+ *
+ * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/CropCircleTransformation.java]
  */
 class CircleTransformation(val context: Context, private val borderWidth: Int
                            , borderColor: Int) : BitmapTransformation() {
