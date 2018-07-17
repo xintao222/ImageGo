@@ -8,21 +8,24 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.text.TextUtils
+import android.view.View
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.fungo.imagego.create.ImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
+import com.fungo.imagego.strategy.ImageConfig
+import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
 import com.fungo.imagego.utils.ImageUtils
 import java.io.File
@@ -41,66 +44,60 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 默认的配置,可以手动配置
      */
-    private val defaultOptions = GlideImageOptions
+    private val builder = ImageConfig
             .Builder()
-            .setAsBitmap(true)
             .setPlaceHolderDrawable(ColorDrawable(Color.parseColor(ImageConstant.IMAGE_PLACE_HOLDER_COLOR)))
-            .setDiskCacheStrategy(GlideImageOptions.DiskCache.AUTOMATIC)
-            .setPriority(GlideImageOptions.LoadPriority.NORMAL)
-            .isCrossFade(true)
-            .build()
+            .setDiskCacheStrategy(ImageConfig.DiskCache.AUTOMATIC)
+            .setPriority(ImageConfig.LoadPriority.NORMAL)
+            .setCrossFade(true)
+            .setAsGif(false)
 
-
-    override fun loadImage(url: String?, imageView: ImageView?) {
-        loadImage(url, imageView, null)
+    override fun loadImage(url: String?, view: View?) {
+        loadImage(url, view, null)
     }
 
-    override fun loadImage(url: String?, placeholder: Int, imageView: ImageView?) {
-        loadImage(url, imageView, defaultOptions.parseBuilder(defaultOptions)
-                .setPlaceHolderResId(placeholder).build(), null)
+    override fun loadImage(url: String?, view: View?, listener: OnImageListener?) {
+        loadImage(url, view, builder.build(), listener)
     }
 
-
-    override fun loadImage(url: String?, imageView: ImageView?, listener: OnImageListener?) {
-        loadImage(url, imageView, defaultOptions, listener)
+    override fun loadImage(obj: Any?, view: View?) {
+        loadImage(obj, view, builder.build(), null)
     }
 
-    override fun loadGifImage(url: String?, imageView: ImageView?) {
-        loadGifImage(url, imageView, null)
+    override fun loadGif(url: String?, view: View?) {
+        loadGif(url, view, null)
     }
 
-    override fun loadGifImage(url: String?, placeholder: Int, imageView: ImageView?) {
-        loadImage(url, imageView, defaultOptions.parseBuilder(defaultOptions)
-                .setAsGif(true).setAsBitmap(false).build(), null)
-    }
-
-    override fun loadGifImage(url: String?, imageView: ImageView?, listener: OnImageListener?) {
-        loadImage(url, imageView, defaultOptions.parseBuilder(defaultOptions)
-                .setAsGif(true).setAsBitmap(false).build(), listener)
-    }
-
-    override fun loadImage(obj: Any?, imageView: ImageView?) {
-        loadImage(obj, imageView, defaultOptions, null)
+    override fun loadGif(url: String?, view: View?, listener: OnImageListener?) {
+        loadImage(url, view, builder.setAsGif(true).build(), listener)
     }
 
 
-    override fun loadImageNoFade(url: String?, imageView: ImageView?) {
-        loadImage(url, imageView, defaultOptions.parseBuilder(defaultOptions)
-                .isCrossFade(false).build(), null)
+    override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?) {
+        if (context == null || any == null) {
+            listener?.onFail("context or url is null...")
+            return
+        }
+        ImageUtils.runOnSubThread(Runnable {
+            val bitmap = Glide.with(context).asBitmap().load(any).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
+            ImageUtils.runOnUIThread(Runnable {
+                listener?.onSuccess(bitmap)
+            })
+        })
     }
 
-    override fun saveImage(context: Context?, url: String?, listener: OnImageSaveListener?) {
+    override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
         ImageUtils.runOnSubThread(Runnable {
             try {
-                if (context != null && !TextUtils.isEmpty(url)) {
-                    val suffix = if (ImageUtils.isGif(url)) {
+                if (context != null && any != null) {
+                    val suffix = if (ImageUtils.isGif(any)) {
                         "${System.currentTimeMillis()}.gif"
                     } else {
                         "${System.currentTimeMillis()}.jpg"
                     }
 
                     val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
-                    val imageFile = download(context, url!!)
+                    val imageFile = download(context, any)
                     val isCopySuccess = ImageUtils.copyFile(imageFile, destFile)
 
                     // 最后通知图库更新
@@ -122,18 +119,6 @@ class GlideImageStrategy : ImageStrategy {
         })
     }
 
-    override fun loadBitmapImage(context: Context?, url: String?, listener: OnImageListener?) {
-        if (context == null || TextUtils.isEmpty(url)) {
-            listener?.onFail("context or url is null...")
-            return
-        }
-        ImageUtils.runOnSubThread(Runnable {
-            val bitmap = Glide.with(context).asBitmap().load(url).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
-            ImageUtils.runOnUIThread(Runnable {
-                listener?.onSuccess(bitmap)
-            })
-        })
-    }
 
     override fun clearImageDiskCache(context: Context?) {
         if (context != null) {
@@ -141,22 +126,19 @@ class GlideImageStrategy : ImageStrategy {
         }
     }
 
-    /** 清除内存缓存，只能在主线程调用本方法 */
+    /**
+     * 清除内存缓存，只能在主线程调用本方法
+     */
     override fun clearImageMemoryCache(context: Context?) {
         if (context != null) {
             Glide.get(context).clearMemory()
         }
     }
 
-    override fun clearImageCache(context: Context?) {
-        ImageUtils.showToast(context, "正在清除缓存...")
-        clearImageMemoryCache(context)
-        ImageUtils.runOnSubThread(Runnable {
-            clearImageDiskCache(context)
-            ImageUtils.showToast(context, "清除成功")
-        })
-    }
 
+    /**
+     * 获取本地缓存大小
+     */
     override fun getCacheSize(context: Context?): String {
         return ImageUtils.getImageCacheSize(context)
     }
@@ -173,7 +155,7 @@ class GlideImageStrategy : ImageStrategy {
         }
     }
 
-    private fun loadImage(obj: Any?, imageView: ImageView?, config: GlideImageOptions?, listener: OnImageListener?) {
+    private fun loadImage(obj: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
         if (obj == null) {
             listener?.onFail("GlideImageStrategy：image request url is null...")
             return
@@ -186,34 +168,36 @@ class GlideImageStrategy : ImageStrategy {
             }
         }
 
-        if (imageView == null) {
+        if (view == null) {
             listener?.onFail("GlideImageStrategy：imageView is null...")
             return
         }
 
-        val context = imageView.context
+        val context = view.context
         if (context == null) {
             listener?.onFail("GlideImageStrategy：context is null...")
             return
         }
-        val glideConfig: GlideImageOptions = config ?: defaultOptions
         try {
-            when {
-                glideConfig.isAsGif() -> {
-                    val gifBuilder = Glide.with(context).asGif().load(obj)
-                    val builder = buildGift(context, obj, glideConfig, gifBuilder, listener)
-                    // 使用clone方法复用builder，不会请求网络
-                    builder.clone().apply(buildOptions(context, obj, glideConfig)).into(imageView)
-                }
-                glideConfig.isAsBitmap() -> {
-                    val bitmapBuilder = Glide.with(context).asBitmap().load(obj)
-                    val builder = buildBitmap(context, obj, glideConfig, bitmapBuilder, listener)
-                    builder.clone().apply(buildOptions(context, obj, glideConfig)).into(imageView)
-                }
+            if (config.asGif) {
+                val gifBuilder = Glide.with(context).asGif().load(obj)
+                val builder = buildGift(context, obj, config, gifBuilder, listener)
+                // 使用clone方法复用builder，有缓存不会请求网络
+                if (view is ImageView) {
+                    builder.clone().apply(buildOptions(context, obj, config)).into(view)
+                } else throw IllegalStateException("Glide只支持ImageView展示图片")
+            } else {
+                val bitmapBuilder = Glide.with(context).asBitmap().load(obj)
+                val builder = buildBitmap(context, obj, config, bitmapBuilder, listener)
+                if (view is ImageView) {
+                    builder.clone().apply(buildOptions(context, obj, config)).into(view)
+                } else throw IllegalStateException("Glide只支持ImageView展示图片")
             }
         } catch (e: Exception) {
             listener?.onFail("GlideImageStrategy：load image exception: " + e.message)
-            imageView.setImageResource(glideConfig.getErrorResId())
+            if (view is ImageView) {
+                view.setImageResource(config.errorResId)
+            }
         }
     }
 
@@ -221,13 +205,25 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置bitmap属性
      */
-    private fun buildBitmap(context: Context, obj: Any, glideConfig: GlideImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
+    private fun buildBitmap(context: Context, obj: Any, config: ImageConfig, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
         var builder = bitmapBuilder
         // 渐变展示
-        if (glideConfig.isCrossFade()) {
+        if (config.isCrossFade) {
             builder.transition(BitmapTransitionOptions.withCrossFade())
         }
 
+        // 缩略图大小
+        if (config.thumbnail > 0f) {
+            builder.thumbnail(config.thumbnail)
+        }
+
+        // 缩略图请求
+        if (!TextUtils.isEmpty(config.thumbnailUrl)) {
+            val thumbnailBuilder = Glide.with(context).asBitmap().load(obj).thumbnail(Glide.with(context).asBitmap().load(config.thumbnailUrl))
+            builder = thumbnailBuilder
+        }
+
+        // 加载监听
         builder.listener(object : RequestListener<Bitmap> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Bitmap>?, isFirstResource: Boolean): Boolean {
                 listener?.onFail(e?.message ?: "GlideImageStrategy：image load fail")
@@ -239,18 +235,6 @@ class GlideImageStrategy : ImageStrategy {
                 return false
             }
         })
-
-        // 缩略图大小
-        if (glideConfig.getThumbnail() > 0f) {
-            builder.thumbnail(glideConfig.getThumbnail())
-        }
-
-
-        // 缩略图请求
-        if (!TextUtils.isEmpty(glideConfig.getThumbnailUrl())) {
-            val thumbnailBuilder = Glide.with(context).asBitmap().load(obj).thumbnail(Glide.with(context).asBitmap().load(glideConfig.getThumbnailUrl()))
-            builder = thumbnailBuilder
-        }
         return builder
     }
 
@@ -258,14 +242,21 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置Gift属性
      */
-    private fun buildGift(context: Context, obj: Any, glideConfig: GlideImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
+    private fun buildGift(context: Context, obj: Any, config: ImageConfig, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
         var builder = gifBuilder
 
-        // 渐变展示
-        if (glideConfig.isCrossFade()) {
-            builder.transition(DrawableTransitionOptions.withCrossFade())
+        // 缩略图大小
+        if (config.thumbnail > 0f) {
+            builder.thumbnail(config.thumbnail)
         }
 
+        // 缩略图请求
+        if (!TextUtils.isEmpty(config.thumbnailUrl)) {
+            val thumbnailBuilder = Glide.with(context).asGif().load(obj).thumbnail(Glide.with(context).asGif().load(config.thumbnailUrl))
+            builder = thumbnailBuilder
+        }
+
+        // 加载监听
         builder.listener(object : RequestListener<GifDrawable> {
             override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<GifDrawable>?, isFirstResource: Boolean): Boolean {
                 listener?.onFail(e?.message ?: "GlideImageStrategy：Gif load fail")
@@ -278,52 +269,62 @@ class GlideImageStrategy : ImageStrategy {
             }
         })
 
-        // 缩略图大小
-        if (glideConfig.getThumbnail() > 0f) {
-            builder.thumbnail(glideConfig.getThumbnail())
-        }
-
-        // 缩略图请求
-        if (!TextUtils.isEmpty(glideConfig.getThumbnailUrl())) {
-            val thumbnailBuilder = Glide.with(context).asGif().load(obj).thumbnail(Glide.with(context).asGif().load(glideConfig.getThumbnailUrl()))
-            builder = thumbnailBuilder
-        }
         return builder
     }
 
     /**
      * 设置图片加载选项并且加载图片
      */
-    private fun buildOptions(context: Context, obj: Any, glideConfig: GlideImageOptions): RequestOptions {
+    private fun buildOptions(context: Context, obj: Any, config: ImageConfig): RequestOptions {
         val options = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
-        val cacheStrategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            glideConfig.getDiskCacheStrategy()
+        val strategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            when (config.diskCacheStrategy.strategy) {
+                ImageConfig.DiskCache.NONE.strategy -> DiskCacheStrategy.NONE
+                ImageConfig.DiskCache.AUTOMATIC.strategy -> DiskCacheStrategy.AUTOMATIC
+                ImageConfig.DiskCache.RESOURCE.strategy -> DiskCacheStrategy.RESOURCE
+                ImageConfig.DiskCache.DATA.strategy -> DiskCacheStrategy.DATA
+                ImageConfig.DiskCache.ALL.strategy -> DiskCacheStrategy.ALL
+                else -> DiskCacheStrategy.RESOURCE
+            }
         } else {
-            GlideImageOptions.DiskCache.RESOURCE
+            DiskCacheStrategy.RESOURCE
         }
-        options.diskCacheStrategy(cacheStrategy.strategy)
+        options.diskCacheStrategy(strategy)
+
+
+        // 设置加载优先级
+        val priority = when (config.priority.priority) {
+            ImageConfig.LoadPriority.LOW.priority -> Priority.LOW
+            ImageConfig.LoadPriority.NORMAL.priority -> Priority.NORMAL
+            ImageConfig.LoadPriority.HIGH.priority -> Priority.HIGH
+            else -> Priority.NORMAL
+        }
+        options.priority(priority)
+
+
+        // 内存缓存跳过
+        options.skipMemoryCache(config.skipMemoryCache)
 
         // 占位图
         when {
-            glideConfig.getPlaceHolderResId() != 0 ->
-                options.placeholder(glideConfig.getPlaceHolderResId())
-            glideConfig.getErrorResId() != 0 ->
-                options.error(glideConfig.getErrorResId())
-                        .fallback(glideConfig.getErrorResId())
-            glideConfig.getPlaceHolderDrawable() != null ->
-                options.placeholder(glideConfig.getPlaceHolderDrawable())
-                        .error(glideConfig.getPlaceHolderDrawable())
+        // 加载中占位图
+            config.placeHolderResId != 0 ->
+                options.placeholder(config.placeHolderResId)
+        // 这里加载错误和链接为null都设置相同的占位图
+            config.errorResId != 0 ->
+                options.error(config.errorResId)
+                        .fallback(config.errorResId)
+        // 统一设置drawable占位图
+            config.placeHolderDrawable != null ->
+                options.placeholder(config.placeHolderDrawable)
+                        .error(config.placeHolderDrawable)
         }
 
-        // 优先级和内存缓存跳过
-        options
-                .priority(glideConfig.getPriority().strategy)
-                .skipMemoryCache(glideConfig.isSkipMemoryCache())
 
         // Tag
-        val tag = glideConfig.getTag()
+        val tag = config.tag
         if (tag != null) {
             options.signature(ObjectKey(tag))
         } else {
@@ -333,8 +334,10 @@ class GlideImageStrategy : ImageStrategy {
         return options
     }
 
-    /** 获取图片的缓存文件 */
-    override fun download(context: Context, url: String): File {
-        return Glide.with(context).download(url).submit().get()
+    /**
+     * 获取图片的缓存文件
+     */
+    override fun download(context: Context, any: Any?): File {
+        return Glide.with(context).download(any).submit().get()
     }
 }

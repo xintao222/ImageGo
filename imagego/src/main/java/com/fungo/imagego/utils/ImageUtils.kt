@@ -6,7 +6,6 @@ import android.os.Build
 import android.os.Environment
 import android.os.Handler
 import android.os.Looper
-import android.text.TextUtils
 import android.util.Log
 import android.widget.Toast
 import java.io.*
@@ -24,8 +23,12 @@ object ImageUtils {
     /**
      * 是否是GIF图
      */
-    fun isGif(url: String?): Boolean {
-        return !TextUtils.isEmpty(url) && url!!.endsWith(ImageConstant.IMAGE_GIF, true)
+    fun isGif(any: Any?): Boolean {
+        return if (any is String) {
+            any.endsWith(ImageConstant.IMAGE_GIF, true)
+        } else {
+            false
+        }
     }
 
     /**

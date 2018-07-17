@@ -2,7 +2,7 @@ package com.fungo.imagego
 
 import android.content.Context
 import android.widget.ImageView
-import com.fungo.imagego.create.ImageStrategy
+import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
@@ -51,12 +51,11 @@ class ImageManager {
      */
     fun loadImageNoFade(url: String?, imageView: ImageView?) {
         checkStrategy()
-        mImageStrategy!!.loadImageNoFade(url, imageView)
     }
 
     fun loadBitmap(context: Context?, url: String?, listener: OnImageListener?) {
         checkStrategy()
-        return mImageStrategy!!.loadBitmapImage(context, url, listener)
+        return mImageStrategy!!.loadBitmap(context, url, listener)
     }
 
     /**
@@ -65,7 +64,7 @@ class ImageManager {
     fun loadImage(url: String?, imageView: ImageView?, listener: OnImageListener?) {
         checkStrategy()
         if (ImageUtils.isGif(url)) {
-            mImageStrategy!!.loadGifImage(url, imageView, listener)
+            mImageStrategy!!.loadGif(url, imageView, listener)
         } else {
             mImageStrategy!!.loadImage(url, imageView, listener)
         }
@@ -92,7 +91,8 @@ class ImageManager {
      */
     fun clearImageCache(context: Context?) {
         checkStrategy()
-        mImageStrategy!!.clearImageCache(context)
+        mImageStrategy!!.clearImageMemoryCache(context)
+        mImageStrategy!!.clearImageDiskCache(context)
     }
 
     /**
