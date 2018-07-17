@@ -79,8 +79,8 @@ class GlideImageStrategy : ImageStrategy {
      */
     override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?) {
         if (context == null || any == null) {
-            listener?.onFail(ImageConstant.ERROR_LOAD_NULL_CONTEXT_ANY)
-            ImageUtils.logD(ImageConstant.ERROR_LOAD_NULL_CONTEXT_ANY)
+            listener?.onFail(ImageConstant.LOAD_NULL_CONTEXT_ANY)
+            ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
             return
         }
         // submit方法要在子线程调用
@@ -202,47 +202,48 @@ class GlideImageStrategy : ImageStrategy {
 
     /**
      * Glide加载图片的主要方法
-     * @param obj 图片资源
+     * @param any 图片资源
      * @param view 图片展示控件
      * @param config 图片配置
      * @param listener 图片加载回调
      */
-    private fun loadImage(obj: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
-        if (obj == null||view == null) {
-            listener?.onFail("GlideImageStrategy：image request url is null...")
+    private fun loadImage(any: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
+        // any和view判空
+        if (any == null||view == null) {
+            listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
+            ImageUtils.logD(ImageConstant.LOAD_NULL_ANY_VIEW)
             return
         }
 
+        // context判空
         val context = view.context
         if (context == null) {
-            listener?.onFail("GlideImageStrategy：context is null...")
+            listener?.onFail(ImageConstant.LOAD_NULL_CONTEXT)
+            ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT)
             return
-        }
-
-        if (obj is String) {
-            if (TextUtils.isEmpty(obj)) {
-                listener?.onFail("GlideImageStrategy：image request url is null...")
-                return
-            }
         }
 
         try {
+            // 作为Gif图片加载
             if (config.asGif) {
-                val gifBuilder = Glide.with(context).asGif().load(obj)
-                val builder = buildGift(context, obj, config, gifBuilder, listener)
+                val gifBuilder = Glide.with(context).asGif().load(any)
+                val builder = buildGift(context, any, config, gifBuilder, listener)
+
                 // 使用clone方法复用builder，有缓存不会请求网络
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(context, obj, config)).into(view)
-                } else throw IllegalStateException("Glide只支持ImageView展示图片")
+                    builder.clone().apply(buildOptions(context, any, config)).into(view)
+                } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
+
             } else {
-                val bitmapBuilder = Glide.with(context).asBitmap().load(obj)
-                val builder = buildBitmap(context, obj, config, bitmapBuilder, listener)
+                val bitmapBuilder = Glide.with(context).asBitmap().load(any)
+                val builder = buildBitmap(context, any, config, bitmapBuilder, listener)
+
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(context, obj, config)).into(view)
-                } else throw IllegalStateException("Glide只支持ImageView展示图片")
+                    builder.clone().apply(buildOptions(context, any, config)).into(view)
+                } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
             }
         } catch (e: Exception) {
-            listener?.onFail("GlideImageStrategy：load image exception: " + e.message)
+            listener?.onFail(ImageConstant.LOAD_ERROR)
             if (view is ImageView) {
                 view.setImageResource(config.errorResId)
             }

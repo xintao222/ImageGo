@@ -109,7 +109,7 @@ class ImageManager {
      */
     private fun checkStrategy() {
         if (mImageStrategy == null) {
-            ImageUtils.logD(ImageConstant.ERROR_LOAD_NULL_STRATEGY)
+            ImageUtils.logD(ImageConstant.LOAD_NULL_STRATEGY)
             mImageStrategy = GlideImageStrategy()
         }
     }
