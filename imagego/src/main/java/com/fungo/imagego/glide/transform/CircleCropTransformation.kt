@@ -15,8 +15,8 @@ import java.security.MessageDigest
  *
  * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/CropCircleTransformation.java]
  */
-class CircleTransformation(val context: Context, private val borderWidth: Int
-                           , borderColor: Int) : BitmapTransformation() {
+class CircleCropTransformation(val context: Context, private val borderWidth: Int = 0
+                               , borderColor: Int = 0) : BitmapTransformation() {
 
     /**
      * 绘制边框的画笔
@@ -38,9 +38,7 @@ class CircleTransformation(val context: Context, private val borderWidth: Int
         return circleCrop(pool, toTransform)
     }
 
-    private fun circleCrop(pool: BitmapPool, source: Bitmap?): Bitmap? {
-        if (source == null) return null
-
+    private fun circleCrop(pool: BitmapPool, source: Bitmap): Bitmap? {
         // 获取资源的长宽,获取最小值 子位图的像素个数
         val size = Math.min(source.width, source.height)
         // 子位图第一个像素在源位图的X坐标

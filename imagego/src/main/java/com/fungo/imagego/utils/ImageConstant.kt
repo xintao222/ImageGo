@@ -8,6 +8,16 @@ package com.fungo.imagego.utils
 
 object ImageConstant {
 
+    /**
+     * 是否是开发模式，正式环境设置为false
+     */
+    var DEBUG = true
+
+    /**
+     * 是否自动加载Gif图
+     */
+    var AUTO_GIF = false
+
     const val IMAGE_GIF = ".gif"
     const val IMAGE_JPG = ".jpg"
     const val IMAGE_PATH = "Fungo"
@@ -26,6 +36,4 @@ object ImageConstant {
     const val SAVE_PATH= "图片已保存至 "
 
     const val CLEAR_NULL_CONTEXT = "清理失败：context为null"
-
-
 }

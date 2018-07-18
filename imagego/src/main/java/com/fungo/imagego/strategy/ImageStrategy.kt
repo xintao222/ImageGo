@@ -3,8 +3,10 @@ package com.fungo.imagego.strategy
 
 import android.content.Context
 import android.view.View
+import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
+import com.fungo.imagego.listener.OnProgressListener
 import java.io.File
 
 /**
@@ -12,49 +14,81 @@ import java.io.File
  * @since 3/28/18 2:17 PM
  *
  * 图片加载策略基类，定义接口
+ * 只定义最全的接口，不全的可以在Manager中补上
  */
 
 interface ImageStrategy {
 
-    /**
-     * 加载网络图片，支持png，jpeg,jpg等格式
-     * @param url 图片的网络链接
-     * @param view 图片展示
-     */
-    fun loadImage(url: String?, view: View?)
 
     /**
      * 加载网络图片，支持png，jpeg,jpg等格式
-     * @param url 图片的网络链接
+     * @param any 图片资源，可以是Url,File,Bitmap,URI,ResID,Drawable
      * @param view 图片展示
      * @param listener 图片加载监听
      */
-    fun loadImage(url: String?, view: View?, listener: OnImageListener?)
+    fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder)
+
 
     /**
-     * 通过其他资源加载图片
-     * @param obj:图片资源，可以是File,Bitmap,URI,ResID,Drawable
-     * @param view:图片展示
+     * 获取图片加载的配置
      */
-    fun loadImage(obj: Any?, view: View?)
+    fun getBuilder():ImageOptions.Builder
 
+
+    /**
+     * 加载网络图片
+     * @param any 资源
+     * @param view　视图
+     */
+    fun loadImage(any: Any?,view: View?){
+        loadImage(any,view,null,getBuilder())
+    }
+
+    /**
+     * 加载网络图片
+     * @param any 资源
+     * @param view　视图
+     * @param listener　监听
+     */
+    fun loadImage(any: Any?,view: View?,listener: OnImageListener?){
+        loadImage(any,view,listener,getBuilder())
+    }
+
+
+    /**
+     * 加载Gif图片
+     * @param any　资源
+     * @param view　视图
+     */
+    fun loadGif(any: Any?, view: View?){
+        loadGif(any,view,null)
+    }
+
+
+    /**
+     * 加载Gif
+     * @param any　资源
+     * @param view　视图
+     * @param listener　监听
+     */
+    fun loadGif(any: Any?, view: View?,listener: OnImageListener?){
+        loadGif(any,view,null,getBuilder())
+    }
 
 
     /**
      * 加载Gif网络图片
-     * @param url Gif图片的网络链接
-     * @param view　展示的View
-     */
-    fun loadGif(url: String?, view: View?)
-
-
-    /**
-     * 加载Gif网络图片
-     * @param url Gif图片的网络链接
+     * @param any Gif图片的网络链接
      * @param view　展示的View
      * @param listener　加载监听
      */
-    fun loadGif(url: String?, view: View?, listener: OnImageListener?)
+    fun loadGif(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder)
+
+
+    /**
+     * 加载图片，带有进度条
+     */
+    fun loadProgress(url: String?, view: View?, listener: OnProgressListener)
 
 
     /**
@@ -64,6 +98,86 @@ interface ImageStrategy {
      * @param listener　加载图片的回调
      */
     fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?)
+
+    /**
+     * 加载圆形图片
+     * @param url 图片链接
+     * @param view　图片
+     */
+    fun loadCircle(url:String?,view:View?){
+        loadCircle(url,view,0,0,null)
+    }
+
+
+    /**
+     * 加载圆形图片
+     * @param url 图片链接
+     * @param view　展示视图
+     * @param borderColor　边框的颜色
+     * @param borderWidth　边框的大小
+     * @param listener　回调
+     */
+    fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int,listener: OnImageListener?){
+        loadImage(url, view,listener, getBuilder()
+                .setAsGif(false)
+                .setCrossFade(false)
+                .setCircleCrop(true)
+                .setCircleBorderColor(borderColor)
+                .setCircleBorderWidth(borderWidth))
+    }
+
+
+    /**
+     * 加载圆角图片
+     * @param url 资源
+     * @param view 视图
+     */
+    fun loadRound(url: String?,view: View?){
+        loadRound(url,view,0,RoundType.ALL,null)
+    }
+
+
+    /**
+     * 加载圆角图片
+     * @param url 图片链接
+     * @param view 展示
+     * @param roundRadius　圆角的角度
+     * @param roundType　圆角图片的边向
+     * @param listener 回调
+     */
+    fun loadRound(url: String?,view: View?,roundRadius:Int,roundType: RoundType,listener: OnImageListener?){
+        loadImage(url, view,listener, getBuilder()
+                .setAsGif(false)
+                .setCrossFade(false)
+                .setRoundedCorners(true)
+                .setRoundRadius(roundRadius)
+                .setRoundType(roundType))
+    }
+
+
+    /**
+     * 加载高斯模糊图片
+     * @param url　图片链接
+     * @param view　展示
+     */
+    fun loadBlur(url: String?,view: View?){
+        loadBlur(url,view,0,null)
+    }
+
+    /**
+     * 加载高斯模糊图片
+     * @param url　图片链接
+     * @param view　展示
+     * @param blurRadius　高斯模糊的度数
+     * @param listener 回调
+     */
+    fun loadBlur(url: String?,view: View?,blurRadius:Int,listener: OnImageListener?){
+        loadImage(url, view, listener, getBuilder()
+                .setAsGif(false)
+                .setCrossFade(false)
+                .setBlur(true)
+                .setBlurRadius(blurRadius))
+    }
 
 
     /**

@@ -2,6 +2,7 @@ package com.fungo.imagego.strategy
 
 import android.graphics.drawable.Drawable
 import android.support.annotation.ColorInt
+import com.fungo.imagego.glide.transform.RoundType
 
 /**
  * @author Pinger
@@ -9,7 +10,7 @@ import android.support.annotation.ColorInt
  *
  * 图片加载库的配置，封装原始加载配置属性，进行转换
  */
-class ImageConfig private constructor() {
+class ImageOptions private constructor() {
 
     /**
      * 加载占位图资源ID
@@ -75,9 +76,10 @@ class ImageConfig private constructor() {
 
 
     /**
-     * 圆形图片
+     * 特效处理：圆形图片
+     * Glide要将isCrossFade设置为false，不然会影响展示效果
      */
-    var isCircle: Boolean = false
+    var isCircleCrop: Boolean = false
 
     /**
      * 圆形是否带边框
@@ -91,21 +93,39 @@ class ImageConfig private constructor() {
 
     /**
      * 模糊特效
+     * Glide要将isCrossFade设置为false，不然会影响展示效果
      */
     var isBlur: Boolean = false
+
+    /**
+     * 设置高斯模糊度数，如果外面设置为0则使用默认值
+     */
+    var blurRadius:Int = 25
 
 
     /**
      * 是否圆角
+     * Glide要将isCrossFade设置为false，不然会影响展示效果
      */
-    var isRounder:Boolean = false
+    var isRoundedCorners:Boolean = false
+
+
+    /**
+     * 圆角的弧度
+     */
+    var roundRadius:Int =  0
+
+    /**
+     * 圆角的边向
+     */
+    var roundType: RoundType = RoundType.ALL
 
 
     /**
      * 内部类，生成图片的基本配置
      */
     class Builder {
-        private val config = ImageConfig()
+        private val config = ImageOptions()
 
         fun setPlaceHolderResId(placeHolderResId: Int): Builder {
             config.placeHolderResId = placeHolderResId
@@ -162,27 +182,55 @@ class ImageConfig private constructor() {
             return this
         }
 
-        fun setOverideSize(width: Int, height: Int) {
+        fun setOverideSize(width: Int, height: Int): Builder {
             config.size = OverrideSize(width, height)
+            return this
         }
 
-        fun setCircle(isCircle: Boolean) {
-            config.isCircle = isCircle
+        fun setCircleCrop(isCircle: Boolean): Builder {
+            config.isCircleCrop = isCircle
+            return this
         }
 
-        fun setCircleBorderWidth(width: Int) {
+        fun setCircleBorderWidth(width: Int) : Builder{
             config.circleBorderWidth = width
+            return this
         }
 
-        fun setCircleBorderColor(@ColorInt color: Int) {
+        fun setCircleBorderColor(@ColorInt color: Int): Builder {
             config.circleBorderColor = color
+            return this
         }
 
-        fun setBlur(blur: Boolean) {
+        fun setBlur(blur: Boolean): Builder {
             config.isBlur = blur
+            return this
         }
 
-        fun build(): ImageConfig {
+        fun setBlurRadius(blurRadius:Int): Builder{
+            if (blurRadius!=0) {
+                config.blurRadius = blurRadius
+            }
+            return this
+        }
+
+        fun setRoundedCorners(roundedCorners:Boolean): Builder{
+            config.isRoundedCorners = roundedCorners
+            return this
+        }
+
+        fun setRoundRadius(roundRadius:Int): Builder{
+            config.roundRadius = roundRadius
+            return this
+        }
+
+        fun setRoundType(roundType: RoundType): Builder{
+            config.roundType = roundType
+            return this
+        }
+
+
+        fun build(): ImageOptions {
             return config
         }
     }

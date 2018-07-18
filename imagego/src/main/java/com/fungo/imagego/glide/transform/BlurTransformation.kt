@@ -1,14 +1,10 @@
 package com.fungo.imagego.glide.transform
 
-import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.os.Build
-import android.renderscript.RSRuntimeException
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-
 import java.security.MessageDigest
 
 
@@ -18,11 +14,10 @@ import java.security.MessageDigest
  * 高斯模糊特效
  * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/BlurTransformation.java]
  * @param radius 高斯的程度
- * @param sampling 样例
+ * @param sampling 比例
  */
 
-class BlurTransformation @JvmOverloads constructor(private val radius: Int = MAX_RADIUS, private val sampling: Int = DEFAULT_DOWN_SAMPLING) : BitmapTransformation() {
-
+class BlurTransformation(private val radius: Int = MAX_RADIUS, private val sampling: Int = DEFAULT_DOWN_SAMPLING) : BitmapTransformation() {
 
     override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap? {
         val width = toTransform.width

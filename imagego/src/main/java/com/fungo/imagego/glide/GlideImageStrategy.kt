@@ -23,9 +23,13 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
 import com.fungo.imagego.glide.transform.BlurTransformation
+import com.fungo.imagego.glide.transform.CircleCropTransformation
+import com.fungo.imagego.glide.transform.RoundedCornersTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
-import com.fungo.imagego.strategy.ImageConfig
+import com.fungo.imagego.listener.OnProgressListener
+import com.fungo.imagego.progress.ProgressEngine
+import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
 import com.fungo.imagego.utils.ImageUtils
@@ -42,38 +46,56 @@ import java.io.File
 class GlideImageStrategy : ImageStrategy {
 
     /**
-     * 默认的配置,可以手动配置
+     * 获取默认的配置,可以手动配置
      */
-    private val builder = ImageConfig
-            .Builder()
-            .setPlaceHolderDrawable(ColorDrawable(Color.parseColor(ImageConstant.IMAGE_PLACE_HOLDER_COLOR)))
-            .setDiskCacheStrategy(ImageConfig.DiskCache.AUTOMATIC)
-            .setPriority(ImageConfig.LoadPriority.NORMAL)
-            .setCrossFade(true)
-            .setAsGif(false)
+    override fun getBuilder(): ImageOptions.Builder {
+        return ImageOptions
+                .Builder()
+                .setPlaceHolderDrawable(ColorDrawable(Color.parseColor(ImageConstant.IMAGE_PLACE_HOLDER_COLOR)))
+                .setDiskCacheStrategy(ImageOptions.DiskCache.AUTOMATIC)
+                .setPriority(ImageOptions.LoadPriority.NORMAL)
+                .setCrossFade(true)
+                .setAsGif(false)
+    }
 
 
     /**
      * 加载图片
      */
-    override fun loadImage(url: String?, view: View?) {
-        loadImage(url, view, null)
+    override fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
+        if (ImageConstant.AUTO_GIF && any is String && ImageUtils.isGif(any)) {
+            loadGif(any,view,listener,builder)
+        }else{
+            loadImage(any, view, builder.setAsGif(false).build(), listener)
+        }
     }
 
-    override fun loadImage(url: String?, view: View?, listener: OnImageListener?) {
-        loadImage(url, view, builder.build(), listener)
+
+    /**
+     * 加载Gif图
+     */
+    override fun loadGif(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
+        loadImage(any, view, builder.setAsGif(true).build(), listener)
     }
 
-    override fun loadImage(obj: Any?, view: View?) {
-        loadImage(obj, view, builder.build(), null)
-    }
 
-    override fun loadGif(url: String?, view: View?) {
-        loadGif(url, view, null)
-    }
-
-    override fun loadGif(url: String?, view: View?, listener: OnImageListener?) {
-        loadImage(url, view, builder.setAsGif(true).build(), listener)
+    /**
+     * 加载进度条图片
+     */
+    override fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
+        if (view == null || url == null) {
+            listener.onProgress(0,0,false)
+            ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
+            return
+        }
+        // 进度条引擎
+        ProgressEngine.addProgressListener(listener)
+        // 加载图片
+        if (ImageUtils.isGif(url)) {
+            loadGif(url,view)
+        }else{
+            loadImage(url,view)
+        }
     }
 
 
@@ -211,7 +233,7 @@ class GlideImageStrategy : ImageStrategy {
      * @param config 图片配置
      * @param listener 图片加载回调
      */
-    private fun loadImage(any: Any?, view: View?, config: ImageConfig, listener: OnImageListener?) {
+    private fun loadImage(any: Any?, view: View?, config: ImageOptions, listener: OnImageListener?) {
         // any和view判空
         if (any == null || view == null) {
             listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
@@ -258,7 +280,7 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置bitmap属性
      */
-    private fun buildBitmap(context: Context, obj: Any, config: ImageConfig, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
+    private fun buildBitmap(context: Context, obj: Any, config: ImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
         var builder = bitmapBuilder
         // 渐变展示
         if (config.isCrossFade) {
@@ -295,7 +317,7 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置Gift属性
      */
-    private fun buildGift(context: Context, obj: Any, config: ImageConfig, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
+    private fun buildGift(context: Context, obj: Any, config: ImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
         var builder = gifBuilder
 
         // 缩略图大小
@@ -328,17 +350,17 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置图片加载选项，返回请求对象
      */
-    private fun buildOptions(context: Context, obj: Any, config: ImageConfig): RequestOptions {
+    private fun buildOptions(context: Context, obj: Any, config: ImageOptions): RequestOptions {
         val options = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
         val strategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             when (config.diskCacheStrategy.strategy) {
-                ImageConfig.DiskCache.NONE.strategy -> DiskCacheStrategy.NONE
-                ImageConfig.DiskCache.AUTOMATIC.strategy -> DiskCacheStrategy.AUTOMATIC
-                ImageConfig.DiskCache.RESOURCE.strategy -> DiskCacheStrategy.RESOURCE
-                ImageConfig.DiskCache.DATA.strategy -> DiskCacheStrategy.DATA
-                ImageConfig.DiskCache.ALL.strategy -> DiskCacheStrategy.ALL
+                ImageOptions.DiskCache.NONE.strategy -> DiskCacheStrategy.NONE
+                ImageOptions.DiskCache.AUTOMATIC.strategy -> DiskCacheStrategy.AUTOMATIC
+                ImageOptions.DiskCache.RESOURCE.strategy -> DiskCacheStrategy.RESOURCE
+                ImageOptions.DiskCache.DATA.strategy -> DiskCacheStrategy.DATA
+                ImageOptions.DiskCache.ALL.strategy -> DiskCacheStrategy.ALL
                 else -> DiskCacheStrategy.RESOURCE
             }
         } else {
@@ -349,9 +371,9 @@ class GlideImageStrategy : ImageStrategy {
 
         // 设置加载优先级
         val priority = when (config.priority.priority) {
-            ImageConfig.LoadPriority.LOW.priority -> Priority.LOW
-            ImageConfig.LoadPriority.NORMAL.priority -> Priority.NORMAL
-            ImageConfig.LoadPriority.HIGH.priority -> Priority.HIGH
+            ImageOptions.LoadPriority.LOW.priority -> Priority.LOW
+            ImageOptions.LoadPriority.NORMAL.priority -> Priority.NORMAL
+            ImageOptions.LoadPriority.HIGH.priority -> Priority.HIGH
             else -> Priority.NORMAL
         }
         options.priority(priority)
@@ -362,17 +384,12 @@ class GlideImageStrategy : ImageStrategy {
 
         // 占位图
         when {
-        // 加载中占位图
-            config.placeHolderResId != 0 ->
-                options.placeholder(config.placeHolderResId)
-        // 这里加载错误和链接为null都设置相同的占位图
-            config.errorResId != 0 ->
-                options.error(config.errorResId)
-                        .fallback(config.errorResId)
-        // 统一设置drawable占位图
-            config.placeHolderDrawable != null ->
-                options.placeholder(config.placeHolderDrawable)
-                        .error(config.placeHolderDrawable)
+            // 加载中占位图
+            config.placeHolderResId != 0 -> options.placeholder(config.placeHolderResId)
+            // 这里加载错误和链接为null都设置相同的占位图
+            config.errorResId != 0 -> options.error(config.errorResId).fallback(config.errorResId)
+            // 统一设置drawable占位图
+            config.placeHolderDrawable != null -> options.placeholder(config.placeHolderDrawable).error(config.placeHolderDrawable)
         }
 
         // Tag
@@ -383,6 +400,21 @@ class GlideImageStrategy : ImageStrategy {
             options.signature(ObjectKey(obj.toString()))
         }
 
+        // 设置transform
+        // 是否设置圆行特效
+        if (config.isCircleCrop) {
+            options.transform(CircleCropTransformation(context,config.circleBorderWidth,config.circleBorderColor))
+        }
+
+        // 是否设置圆角特效
+        if(config.isRoundedCorners){
+            options.transform(RoundedCornersTransformation(config.roundRadius,config.roundType))
+        }
+
+        // 设置高斯模糊特效
+        if (config.isBlur) {
+            options.transform(BlurTransformation(config.blurRadius))
+        }
         return options
     }
 

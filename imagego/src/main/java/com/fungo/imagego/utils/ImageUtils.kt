@@ -17,8 +17,6 @@ import java.util.concurrent.Executors
 object ImageUtils {
 
     private val mHandler: Handler = Handler(Looper.getMainLooper())
-    var DEBUG = true
-
 
     /**
      * 是否是GIF图
@@ -210,7 +208,7 @@ object ImageUtils {
      * 打印日志
      */
     fun logD(msg: String) {
-        if (DEBUG) {
+        if (ImageConstant.DEBUG) {
             Log.d("ImageGo", "-----> $msg")
         }
     }
@@ -219,18 +217,8 @@ object ImageUtils {
      * 打印日志
      */
     fun logE(msg: String) {
-        if (DEBUG) {
+        if (ImageConstant.DEBUG) {
             Log.e("ImageGo", "-----> $msg")
         }
     }
-
-
-    /**
-     * 设置当前是不是开发模式
-     */
-    fun setDebug(isDebug: Boolean) {
-        DEBUG = isDebug
-    }
-
-
 }
