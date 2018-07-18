@@ -2,13 +2,11 @@ package com.fungo.imagego
 
 import android.content.Context
 import android.view.View
-import android.widget.ImageView
 import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.progress.ProgressEngine
 import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
 import com.fungo.imagego.utils.ImageUtils
@@ -110,6 +108,20 @@ class ImageManager {
         mImageStrategy!!.loadCircle(url,view)
     }
 
+
+    /**
+     * 加载圆形图片
+     * @param url 图片链接
+     * @param view　展示视图
+     * @param borderColor　边框的颜色
+     * @param borderWidth　边框的大小
+     */
+    fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int){
+        checkStrategy()
+        mImageStrategy!!.loadCircle(url,view,borderWidth,borderColor)
+    }
+
+
     /**
      * 加载圆形图片
      * @param url 图片链接
@@ -123,7 +135,6 @@ class ImageManager {
         mImageStrategy!!.loadCircle(url,view,borderWidth,borderColor,listener)
     }
 
-
     /**
      * 加载圆角图片
      * @param url 资源
@@ -134,6 +145,29 @@ class ImageManager {
         mImageStrategy!!.loadRound(url,view)
     }
 
+    /**
+     * 加载圆角图片
+     * @param url 资源
+     * @param view 视图
+     * @param roundRadius　圆角的角度
+     */
+    fun loadRound(url: String?,view: View?,roundRadius:Int){
+        checkStrategy()
+        mImageStrategy!!.loadRound(url,view,roundRadius)
+    }
+
+
+    /**
+     * 加载圆角图片
+     * @param url 图片链接
+     * @param view 展示
+     * @param roundRadius　圆角的角度
+     * @param roundType　圆角图片的边向
+     */
+    fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType){
+        checkStrategy()
+        mImageStrategy!!.loadRound(url,view,roundRadius,roundType)
+    }
 
     /**
      * 加载圆角图片
@@ -246,9 +280,9 @@ class ImageManager {
     /**
      * 加载图片，带进度条
      */
-    fun loadImageWithProgress(url: String?, imageView: ImageView?, listener: OnProgressListener) {
-        ProgressEngine.addProgressListener(listener)
-        loadImage(url, imageView, null)
+    fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
+        checkStrategy()
+        return mImageStrategy!!.loadProgress(url,view,listener)
     }
 
 

@@ -16,7 +16,9 @@ import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.BitmapTransitionOptions
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
@@ -111,7 +113,16 @@ class GlideImageStrategy : ImageStrategy {
         }
         // submit方法要在子线程调用
         ImageUtils.runOnSubThread(Runnable {
-            val bitmap = Glide.with(context).asBitmap().load(any).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
+
+            // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
+            val options = RequestOptions()
+            val strategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                DiskCacheStrategy.AUTOMATIC
+            } else {
+                DiskCacheStrategy.RESOURCE
+            }
+            options.diskCacheStrategy(strategy)
+            val bitmap = Glide.with(context).asBitmap().load(any).apply(options).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
             ImageUtils.runOnUIThread(Runnable {
                 // 加载成功在主线程回调
                 listener?.onSuccess(bitmap)
@@ -257,7 +268,7 @@ class GlideImageStrategy : ImageStrategy {
 
                 // 使用clone方法复用builder，有缓存不会请求网络
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view,context, any, config)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
 
             } else {
@@ -265,7 +276,7 @@ class GlideImageStrategy : ImageStrategy {
                 val builder = buildBitmap(context, any, config, bitmapBuilder, listener)
 
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view,context, any, config)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
             }
         } catch (e: Exception) {
@@ -350,7 +361,7 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置图片加载选项，返回请求对象
      */
-    private fun buildOptions(context: Context, obj: Any, config: ImageOptions): RequestOptions {
+    private fun buildOptions(view:View,context: Context, obj: Any, config: ImageOptions): RequestOptions {
         val options = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
@@ -408,7 +419,19 @@ class GlideImageStrategy : ImageStrategy {
 
         // 是否设置圆角特效
         if(config.isRoundedCorners){
-            options.transform(RoundedCornersTransformation(config.roundRadius,config.roundType))
+            var transformation:BitmapTransformation?=null
+            // 圆角特效受到ImageView的scaleType属性影响
+            if (view is ImageView && (view.scaleType == ImageView.ScaleType.FIT_CENTER ||
+                                    view.scaleType == ImageView.ScaleType.CENTER_INSIDE||
+                            view.scaleType == ImageView.ScaleType.CENTER ||
+                            view.scaleType == ImageView.ScaleType.CENTER_CROP )) {
+                transformation = CenterCrop()
+            }
+            if (transformation==null) {
+                options.transform(RoundedCornersTransformation(config.roundRadius,config.roundType))
+            }else{
+                options.transforms(CenterCrop(),RoundedCornersTransformation(config.roundRadius,config.roundType))
+            }
         }
 
         // 设置高斯模糊特效

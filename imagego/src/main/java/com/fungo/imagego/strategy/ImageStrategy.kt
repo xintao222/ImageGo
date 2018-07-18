@@ -112,6 +112,19 @@ interface ImageStrategy {
     /**
      * 加载圆形图片
      * @param url 图片链接
+     * @param view　图片
+     * @param borderColor　边框的颜色
+     * @param borderWidth　边框的大小
+     */
+    fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int){
+        loadCircle(url,view,borderWidth,borderColor,null)
+    }
+
+
+    /**
+     * 加载圆形图片
+     * 使用本方法要求View有固定的宽高
+     * @param url 图片链接
      * @param view　展示视图
      * @param borderColor　边框的颜色
      * @param borderWidth　边框的大小
@@ -134,6 +147,24 @@ interface ImageStrategy {
      */
     fun loadRound(url: String?,view: View?){
         loadRound(url,view,0,RoundType.ALL,null)
+    }
+
+    /**
+     * 加载圆角图片
+     * @param url 资源
+     * @param view 视图
+     */
+    fun loadRound(url: String?,view: View?,roundRadius:Int,roundType: RoundType){
+        loadRound(url,view,roundRadius,roundType,null)
+    }
+
+    /**
+     * 加载圆角图片
+     * @param url 资源
+     * @param view 视图
+     */
+    fun loadRound(url: String?,view: View?,roundRadius:Int){
+        loadRound(url,view,roundRadius,RoundType.ALL,null)
     }
 
 
@@ -163,6 +194,18 @@ interface ImageStrategy {
     fun loadBlur(url: String?,view: View?){
         loadBlur(url,view,0,null)
     }
+
+
+    /**
+     * 加载高斯模糊图片
+     * @param url　图片链接
+     * @param blurRadius　高斯模糊的度数
+     * @param view　展示
+     */
+    fun loadBlur(url: String?,view: View?,blurRadius:Int){
+        loadBlur(url,view,blurRadius,null)
+    }
+
 
     /**
      * 加载高斯模糊图片
