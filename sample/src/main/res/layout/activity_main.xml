@@ -5,158 +5,199 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
+    android:padding="10dp"
     tools:context=".MainActivity">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="10dp"
         android:scaleType="centerCrop"
         app:layout_constraintDimensionRatio="w,9:16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:overScrollMode="never"
-        android:padding="10dp"
-        android:scrollbars="none"
-        app:layout_constraintRight_toRightOf="parent"
+
+    <TextView
+        android:id="@+id/tvStrategyType"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:text="加载策略："
+        app:layout_constraintTop_toBottomOf="@+id/imageView"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imageView">
+        android:layout_marginStart="12dp"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        tools:visibility="visible" />
 
-        <android.support.constraint.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+    <RadioGroup
+        android:id="@+id/rgStrategy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/tvStrategyType"
+        app:layout_constraintLeft_toRightOf="@+id/tvStrategyType"
+        app:layout_constraintTop_toTopOf="@+id/tvStrategyType">
 
-            <TextView
-                android:id="@+id/tvStrategyType"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:text="加载策略："
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                android:visibility="gone" />
+        <RadioButton
+            android:id="@+id/rbGlide"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Glide"
+            android:textColor="@android:color/white" />
 
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@+id/tvStrategyType"
-                app:layout_constraintLeft_toRightOf="@+id/tvStrategyType"
-                app:layout_constraintTop_toTopOf="@+id/tvStrategyType">
+        <RadioButton
+            android:id="@+id/rbPicasso"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Picasso"
+            android:textColor="@android:color/white" />
 
-                <RadioButton
-                    android:id="@+id/rbGlide"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Glide"
-                    android:textColor="@android:color/white" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Picasso"
-                    android:textColor="@android:color/white" />
-
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="Fresco"
-                    android:textColor="@android:color/white" />
+        <RadioButton
+            android:id="@+id/rbFresco"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="Fresco"
+            android:textColor="@android:color/white" />
 
 
-            </RadioGroup>
+    </RadioGroup>
 
-            <TextView
-                android:id="@+id/tvImageType"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:gravity="center_vertical"
-                android:text="图片类型："
-                android:textColor="@android:color/white"
-                android:textSize="16sp"
-                app:layout_constraintTop_toBottomOf="@+id/tvStrategyType" />
+    <TextView
+        android:layout_marginStart="12dp"
+        app:layout_goneMarginTop="12dp"
+        android:id="@+id/tvImageType"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginTop="12dp"
+        android:gravity="center_vertical"
+        android:text="图片类型："
+        app:layout_constraintStart_toStartOf="parent"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/tvStrategyType" />
 
-            <RadioGroup
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="@+id/tvImageType"
-                app:layout_constraintLeft_toRightOf="@+id/tvImageType"
-                app:layout_constraintTop_toTopOf="@+id/tvImageType">
+    <RadioGroup
+        android:id="@+id/rgType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@+id/tvImageType"
+        app:layout_constraintLeft_toRightOf="@+id/tvImageType"
+        app:layout_constraintTop_toTopOf="@+id/tvImageType">
 
-                <RadioButton
-                    android:id="@+id/rbNormal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="普通图片"
-                    android:textColor="@android:color/white" />
+        <RadioButton
+            android:id="@+id/rbNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="普通图片"
+            android:textColor="@android:color/white" />
 
-                <RadioButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:text="GIF图片"
-                    android:textColor="@android:color/white" />
+        <RadioButton
+            android:id="@+id/rbGif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="GIF图片"
+            android:textColor="@android:color/white" />
 
-            </RadioGroup>
-
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:background="@drawable/selector_btn_border"
-                android:onClick="onLoadCircle"
-                android:paddingBottom="4dp"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
-                android:paddingTop="4dp"
-                android:text="圆形"
-                android:textColor="@android:color/white"
-                app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
-
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="圆角"-->
-            <!--android:layout_height="wrap_content" />-->
-
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="模糊"-->
-            <!--android:layout_height="wrap_content" />-->
+    </RadioGroup>
 
 
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="进度条"-->
-            <!--android:layout_height="wrap_content" />-->
+    <TextView
+        android:id="@+id/tvCircle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shader_btn_border"
+        android:onClick="onLoadCircle"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:text="圆形"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/tvRound"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
 
 
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:text="保存"-->
-            <!--android:layout_height="wrap_content" />-->
+    <TextView
+        android:id="@+id/tvRound"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shader_btn_border"
+        android:onClick="onLoadRound"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:text="圆角"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/tvBlur"
+        app:layout_constraintStart_toEndOf="@+id/tvCircle"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
 
+    <TextView
+        android:id="@+id/tvBlur"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shader_btn_border"
+        android:onClick="onLoadBlur"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:text="模糊"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/tvProgress"
+        app:layout_constraintStart_toEndOf="@+id/tvRound"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
 
-        </android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/tvProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shader_btn_border"
+        android:onClick="onLoadProgress"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:text="进度条"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toStartOf="@+id/tvSave"
+        app:layout_constraintStart_toEndOf="@+id/tvBlur"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
 
-
-    </ScrollView>
+    <TextView
+        android:id="@+id/tvSave"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/shader_btn_border"
+        android:onClick="onLoadSave"
+        android:paddingBottom="4dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="4dp"
+        android:text="保存"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/tvProgress"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType" />
 
 
 </android.support.constraint.ConstraintLayout>
