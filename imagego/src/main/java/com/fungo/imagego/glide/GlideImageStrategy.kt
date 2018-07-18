@@ -412,6 +412,11 @@ class GlideImageStrategy : ImageStrategy {
             options.signature(ObjectKey(obj.toString()))
         }
 
+        // 设置固定的宽高
+        if (config.size!=null) {
+            options.override(config.size!!.width,config.size!!.height)
+        }
+
         // 设置transform
         // 是否设置圆行特效
         if (config.isCircleCrop) {
