@@ -3,7 +3,7 @@ package com.fungo.sample
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.Toast
-import com.fungo.imagego.ImageManager
+import com.fungo.imagego.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -15,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        ImageManager.instance.loadRound(mUrl,imageView,20)
+        loadRound(mGif,imageView,20)
     }
 
 
@@ -26,12 +26,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        ImageManager.instance.resumeRequests(this)
+        resumeRequests(this)
     }
 
 
     override fun onPause() {
         super.onPause()
-        ImageManager.instance.pauseRequests(this)
+        pauseRequests(this)
     }
 }

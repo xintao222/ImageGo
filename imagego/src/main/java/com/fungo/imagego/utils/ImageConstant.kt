@@ -8,22 +8,11 @@ package com.fungo.imagego.utils
 
 object ImageConstant {
 
-    /**
-     * 是否是开发模式，正式环境设置为false
-     */
-    var DEBUG = true
-
-    /**
-     * 是否自动加载Gif图
-     */
-    var AUTO_GIF = false
-
     const val IMAGE_GIF = ".gif"
     const val IMAGE_JPG = ".jpg"
     const val IMAGE_PATH = "Fungo"
     const val IMAGE_PLACE_HOLDER_COLOR = "#F2F2F2"
 
-    const val LOAD_NULL_STRATEGY= "图片加载失败：加载策略为null，已使用默认策略，请在Application中设置图片加载策略"
     const val LOAD_NULL_CONTEXT_ANY = "图片加载失败：context为null或者any为null"
     const val LOAD_NULL_CONTEXT = "图片加载失败：context为null"
     const val LOAD_NULL_ANY_VIEW = "图片加载失败：any为null或者view为null"

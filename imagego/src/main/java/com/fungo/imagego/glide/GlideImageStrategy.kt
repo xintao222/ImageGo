@@ -24,6 +24,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.fungo.imagego.IMAGE_AUTO_GIF
 import com.fungo.imagego.glide.transform.BlurTransformation
 import com.fungo.imagego.glide.transform.CircleCropTransformation
 import com.fungo.imagego.glide.transform.RoundedCornersTransformation
@@ -65,7 +66,7 @@ class GlideImageStrategy : ImageStrategy {
      * 加载图片
      */
     override fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
-        if (ImageConstant.AUTO_GIF && any is String && ImageUtils.isGif(any)) {
+        if (IMAGE_AUTO_GIF && any is String && ImageUtils.isGif(any)) {
             loadGif(any,view,listener,builder)
         }else{
             loadImage(any, view, builder.setAsGif(false).build(), listener)
@@ -417,12 +418,17 @@ class GlideImageStrategy : ImageStrategy {
             options.transform(CircleCropTransformation(context,config.circleBorderWidth,config.circleBorderColor))
         }
 
+        // 设置高斯模糊特效
+        if (config.isBlur) {
+            options.transform(BlurTransformation(config.blurRadius))
+        }
+
         // 是否设置圆角特效
         if(config.isRoundedCorners){
             var transformation:BitmapTransformation?=null
             // 圆角特效受到ImageView的scaleType属性影响
             if (view is ImageView && (view.scaleType == ImageView.ScaleType.FIT_CENTER ||
-                                    view.scaleType == ImageView.ScaleType.CENTER_INSIDE||
+                            view.scaleType == ImageView.ScaleType.CENTER_INSIDE||
                             view.scaleType == ImageView.ScaleType.CENTER ||
                             view.scaleType == ImageView.ScaleType.CENTER_CROP )) {
                 transformation = CenterCrop()
@@ -432,11 +438,6 @@ class GlideImageStrategy : ImageStrategy {
             }else{
                 options.transforms(CenterCrop(),RoundedCornersTransformation(config.roundRadius,config.roundType))
             }
-        }
-
-        // 设置高斯模糊特效
-        if (config.isBlur) {
-            options.transform(BlurTransformation(config.blurRadius))
         }
         return options
     }

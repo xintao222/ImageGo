@@ -31,5 +31,5 @@ dependencies {
     // Glide依赖
     implementation rootProject.ext.dependencies.glide
     implementation rootProject.ext.dependencies.glide_okhttp3
-    implementation rootProject.ext.dependencies.glide_compiler
+    kapt rootProject.ext.dependencies.glide_compiler
 }
