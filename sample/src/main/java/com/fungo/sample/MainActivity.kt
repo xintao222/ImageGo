@@ -14,8 +14,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        loadRound(mGif,imageView,20)
     }
 
 
@@ -24,14 +22,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    override fun onResume() {
-        super.onResume()
-        resumeRequests(this)
-    }
 
 
-    override fun onPause() {
-        super.onPause()
-        pauseRequests(this)
-    }
+
 }
