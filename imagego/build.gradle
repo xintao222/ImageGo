@@ -29,8 +29,7 @@ dependencies {
     implementation rootProject.ext.dependencies.appcompat_v7
 
     // Glide依赖
-    implementation 'com.github.bumptech.glide:glide:4.7.1'
-    implementation "com.github.bumptech.glide:okhttp3-integration:4.7.1"
-    kapt 'com.github.bumptech.glide:compiler:4.7.1'
-
+    implementation rootProject.ext.dependencies.glide
+    implementation rootProject.ext.dependencies.glide_okhttp3
+    implementation rootProject.ext.dependencies.glide_compiler
 }
