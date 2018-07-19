@@ -8,7 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.fungo.imagego.IMAGE_DEBUG
+import com.fungo.imagego.strategy.ImageEngine
 import java.io.*
 import java.text.DecimalFormat
 import java.util.concurrent.ExecutorService
@@ -157,6 +157,21 @@ object ImageUtils {
         })
     }
 
+
+    /**
+     * 展示Toast
+     */
+    fun showToast(context: Context?, content: String,duration:Int) {
+        if (context == null) {
+            return
+        }
+        ImageUtils.runOnUIThread(Runnable {
+            Toast.makeText(context, content, duration).show()
+        })
+    }
+
+
+
     /**
      * 获取图片缓存的大小
      */
@@ -209,7 +224,7 @@ object ImageUtils {
      * 打印日志
      */
     fun logD(msg: String) {
-        if (IMAGE_DEBUG) {
+        if (ImageEngine.isDebug()) {
             Log.d("ImageGo", "-----> $msg")
         }
     }
@@ -218,7 +233,7 @@ object ImageUtils {
      * 打印日志
      */
     fun logE(msg: String) {
-        if (IMAGE_DEBUG) {
+        if (ImageEngine.isDebug()) {
             Log.e("ImageGo", "-----> $msg")
         }
     }

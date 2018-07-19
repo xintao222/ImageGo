@@ -45,6 +45,16 @@ interface ImageStrategy {
     }
 
     /**
+     * 加载网络图片，支持png，jpeg,jpg等格式
+     * @param any 图片资源，可以是Url,File,Bitmap,URI,ResID,Drawable
+     * @param view 图片展示
+     */
+    fun loadImage(any: Any?, view: View?, builder:ImageOptions.Builder){
+        loadImage(any,view,null,builder)
+    }
+
+
+    /**
      * 加载网络图片
      * @param any 资源
      * @param view　视图
@@ -77,6 +87,16 @@ interface ImageStrategy {
 
 
     /**
+     * 加载Gif
+     * @param any　资源
+     * @param view　视图
+     */
+    fun loadGif(any: Any?, view: View?,builder:ImageOptions.Builder){
+        loadGif(any,view,null,builder)
+    }
+
+
+    /**
      * 加载Gif网络图片
      * @param any Gif图片的网络链接
      * @param view　展示的View
@@ -97,7 +117,7 @@ interface ImageStrategy {
      * @param any 图片资源
      * @param listener　加载图片的回调
      */
-    fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?)
+    fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener)
 
     /**
      * 加载圆形图片
@@ -220,6 +240,16 @@ interface ImageStrategy {
                 .setCrossFade(false)
                 .setBlur(true)
                 .setBlurRadius(blurRadius))
+    }
+
+
+    /**
+     * 保存网络图片到本地
+     * @param context　上下文
+     * @param any　保存的图片资源
+     */
+    fun saveImage(context: Context?, any: Any?){
+        saveImage(context,any,null)
     }
 
 

@@ -11,6 +11,10 @@ import java.io.IOException
 /**
  * @author Pinger
  * @since 3/30/18 11:29 AM
+ *
+ * 图片加载的网络请求体，传入进度加载监听对象
+ * @param responseBody 网络请求响应
+ * @param progressListener 进度条监听
  */
 class ProgressResponseBody(private val responseBody: ResponseBody?, val progressListener: OnProgressListener) : ResponseBody() {
 
@@ -20,6 +24,9 @@ class ProgressResponseBody(private val responseBody: ResponseBody?, val progress
         return responseBody?.contentType()
     }
 
+    /**
+     * 总的字节长度
+     */
     override fun contentLength(): Long {
         try {
             return responseBody?.contentLength() ?: 0
@@ -46,6 +53,7 @@ class ProgressResponseBody(private val responseBody: ResponseBody?, val progress
 
     private fun source(source: Source): Source {
         return object : ForwardingSource(source) {
+            // 接收的字节
             internal var totalBytesRead: Long = 0
             override fun read(sink: Buffer, byteCount: Long): Long {
                 val bytesRead = super.read(sink, byteCount)

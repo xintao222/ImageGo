@@ -10,7 +10,7 @@ object ImageConstant {
 
     const val IMAGE_GIF = ".gif"
     const val IMAGE_JPG = ".jpg"
-    const val IMAGE_PATH = "Fungo"
+    const val IMAGE_PATH = "Images"
     const val IMAGE_PLACE_HOLDER_COLOR = "#F2F2F2"
 
     const val LOAD_NULL_CONTEXT_ANY = "图片加载失败：context为null或者any为null"

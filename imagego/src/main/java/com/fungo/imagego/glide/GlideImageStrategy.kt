@@ -10,6 +10,7 @@ import android.net.Uri
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
@@ -24,14 +25,13 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.fungo.imagego.IMAGE_AUTO_GIF
 import com.fungo.imagego.glide.transform.BlurTransformation
 import com.fungo.imagego.glide.transform.CircleCropTransformation
 import com.fungo.imagego.glide.transform.RoundedCornersTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.progress.ProgressEngine
+import com.fungo.imagego.strategy.ImageEngine
 import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
@@ -66,7 +66,7 @@ class GlideImageStrategy : ImageStrategy {
      * 加载图片
      */
     override fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
-        if (IMAGE_AUTO_GIF && any is String && ImageUtils.isGif(any)) {
+        if (ImageEngine.isAutoGif() && any is String && ImageUtils.isGif(any)) {
             loadGif(any,view,listener,builder)
         }else{
             loadImage(any, view, builder.setAsGif(false).build(), listener)
@@ -91,8 +91,8 @@ class GlideImageStrategy : ImageStrategy {
             ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
             return
         }
-        // 进度条引擎
-        ProgressEngine.addProgressListener(listener)
+        // 添加进度条监听
+        ImageEngine.addProgressListener(listener)
         // 加载图片
         if (ImageUtils.isGif(url)) {
             loadGif(url,view)
@@ -106,28 +106,30 @@ class GlideImageStrategy : ImageStrategy {
      * 加载图片返回bitmap
      * 在主线程调用
      */
-    override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?) {
+    override fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener) {
         if (context == null || any == null) {
-            listener?.onFail(ImageConstant.LOAD_NULL_CONTEXT_ANY)
+            listener.onFail(ImageConstant.LOAD_NULL_CONTEXT_ANY)
             ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
             return
         }
         // submit方法要在子线程调用
         ImageUtils.runOnSubThread(Runnable {
-
-            // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
-            val options = RequestOptions()
-            val strategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                DiskCacheStrategy.AUTOMATIC
-            } else {
-                DiskCacheStrategy.RESOURCE
+            try {
+                val bitmap = Glide
+                        .with(context)
+                        .asBitmap()
+                        .load(any)
+                        .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                        .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .get()
+                ImageUtils.runOnUIThread(Runnable {
+                    listener.onSuccess(bitmap)
+                })
+            }catch (e:Exception){
+                ImageUtils.runOnUIThread(Runnable {
+                    listener.onFail(ImageConstant.LOAD_ERROR)
+                })
             }
-            options.diskCacheStrategy(strategy)
-            val bitmap = Glide.with(context).asBitmap().load(any).apply(options).submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
-            ImageUtils.runOnUIThread(Runnable {
-                // 加载成功在主线程回调
-                listener?.onSuccess(bitmap)
-            })
         })
     }
 
@@ -137,7 +139,11 @@ class GlideImageStrategy : ImageStrategy {
      */
     override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
         if (context == null || any == null) {
-            listener?.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            if (listener==null) {
+                ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
+            }else{
+                listener.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            }
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             return
         }
@@ -163,14 +169,26 @@ class GlideImageStrategy : ImageStrategy {
                 // 主线程回调
                 ImageUtils.runOnUIThread(Runnable {
                     if (isCopySuccess) {
-                        listener?.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
+                        if (listener==null) {
+                            ImageUtils.showToast(context,ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context),Toast.LENGTH_LONG)
+                        }else{
+                            listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
+                        }
                     } else {
-                        listener?.onSaveFail(ImageConstant.SAVE_FAIL)
+                        if (listener==null) {
+                            ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
+                        }else{
+                            listener.onSaveFail(ImageConstant.SAVE_FAIL)
+                        }
                     }
                 })
             } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
-                    listener?.onSaveFail(ImageConstant.SAVE_FAIL)
+                    if (listener==null) {
+                        ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
+                    }else{
+                        listener.onSaveFail(ImageConstant.SAVE_FAIL)
+                    }
                     ImageUtils.logE(ImageConstant.SAVE_FAIL + ": " + e.message)
                 })
             }
@@ -235,7 +253,11 @@ class GlideImageStrategy : ImageStrategy {
      * 缓存图片文件
      */
     override fun download(context: Context, any: Any?): File {
-        return Glide.with(context).download(any).submit().get()
+        return Glide
+                .with(context)
+                .download(any)
+                .submit()
+                .get()
     }
 
     /**

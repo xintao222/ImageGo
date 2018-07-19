@@ -4,42 +4,18 @@ package com.fungo.imagego
 
 import android.content.Context
 import android.view.View
-import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
+import com.fungo.imagego.strategy.ImageEngine
 import com.fungo.imagego.strategy.ImageStrategy
 import java.io.File
 
 
-
-/**
- * 是否是开发模式，正式环境设置为false
- */
-var IMAGE_DEBUG = true
-
-/**
- * 是否自动加载Gif图
- */
-var IMAGE_AUTO_GIF = false
-
-
-/***
- * 图片的加载策略，抽取常用的图片加载方法到基类里，由具体的去实现，使用时只需要基类接口
- */
-private var mImageStrategy: ImageStrategy = GlideImageStrategy()
-
-
-/**
- * 初始化加载策略，在Application中设置
- * 默认使用Glide加载策略
- * @param strategy　图片加载策略
- */
-fun setImageStrategy(strategy: ImageStrategy) {
-    mImageStrategy = strategy
-}
-
+// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
+// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
+// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
 
 /**
  * 加载网络图片
@@ -47,7 +23,7 @@ fun setImageStrategy(strategy: ImageStrategy) {
  * @param view　视图
  */
 fun loadImage(any: Any?,view: View?){
-    mImageStrategy.loadImage(any,view)
+    getStrategy().loadImage(any,view)
 }
 
 /**
@@ -57,7 +33,7 @@ fun loadImage(any: Any?,view: View?){
  * @param listener　监听
  */
 fun loadImage(any: Any?,view: View?,listener: OnImageListener?){
-    mImageStrategy.loadImage(any,view,listener)
+    getStrategy().loadImage(any,view,listener)
 }
 
 
@@ -67,7 +43,7 @@ fun loadImage(any: Any?,view: View?,listener: OnImageListener?){
  * @param view　视图
  */
 fun loadGif(any: Any?, view: View?){
-    mImageStrategy.loadGif(any,view)
+    getStrategy().loadGif(any,view)
 }
 
 
@@ -78,7 +54,16 @@ fun loadGif(any: Any?, view: View?){
  * @param listener　监听
  */
 fun loadGif(any: Any?, view: View?,listener: OnImageListener?){
-    mImageStrategy.loadGif(any,view,listener)
+    getStrategy().loadGif(any,view,listener)
+}
+
+
+
+/**
+ * 加载图片，带进度条
+ */
+fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
+    return getStrategy().loadProgress(url,view,listener)
 }
 
 
@@ -88,8 +73,8 @@ fun loadGif(any: Any?, view: View?,listener: OnImageListener?){
  * @param any 图片资源
  * @param listener　加载图片的回调
  */
-fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?){
-    mImageStrategy.loadBitmap(context,any,listener)
+fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener){
+    getStrategy().loadBitmap(context,any,listener)
 }
 
 /**
@@ -98,7 +83,7 @@ fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener?){
  * @param view　图片
  */
 fun loadCircle(url:String?,view:View?){
-    mImageStrategy.loadCircle(url,view)
+    getStrategy().loadCircle(url,view)
 }
 
 
@@ -110,7 +95,7 @@ fun loadCircle(url:String?,view:View?){
  * @param borderWidth　边框的大小
  */
 fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int){
-    mImageStrategy.loadCircle(url,view,borderWidth,borderColor)
+    getStrategy().loadCircle(url,view,borderWidth,borderColor)
 }
 
 
@@ -123,7 +108,7 @@ fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int){
  * @param listener　回调
  */
 fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int,listener: OnImageListener?){
-    mImageStrategy.loadCircle(url,view,borderWidth,borderColor,listener)
+    getStrategy().loadCircle(url,view,borderWidth,borderColor,listener)
 }
 
 /**
@@ -132,7 +117,7 @@ fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int,listener: 
  * @param view 视图
  */
 fun loadRound(url: String?,view: View?){
-    mImageStrategy.loadRound(url,view)
+    getStrategy().loadRound(url,view)
 }
 
 /**
@@ -142,7 +127,7 @@ fun loadRound(url: String?,view: View?){
  * @param roundRadius　圆角的角度
  */
 fun loadRound(url: String?,view: View?,roundRadius:Int){
-    mImageStrategy.loadRound(url,view,roundRadius)
+    getStrategy().loadRound(url,view,roundRadius)
 }
 
 
@@ -154,7 +139,7 @@ fun loadRound(url: String?,view: View?,roundRadius:Int){
  * @param roundType　圆角图片的边向
  */
 fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType){
-    mImageStrategy.loadRound(url,view,roundRadius,roundType)
+    getStrategy().loadRound(url,view,roundRadius,roundType)
 }
 
 /**
@@ -166,7 +151,7 @@ fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType){
  * @param listener 回调
  */
 fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType, listener: OnImageListener?){
-    mImageStrategy.loadRound(url,view,roundRadius,roundType,listener)
+    getStrategy().loadRound(url,view,roundRadius,roundType,listener)
 }
 
 
@@ -176,7 +161,7 @@ fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType, 
  * @param view　展示
  */
 fun loadBlur(url: String?,view: View?){
-    mImageStrategy.loadBlur(url,view)
+    getStrategy().loadBlur(url,view)
 }
 
 /**
@@ -187,9 +172,17 @@ fun loadBlur(url: String?,view: View?){
  * @param listener 回调
  */
 fun loadBlur(url: String?,view: View?,blurRadius:Int,listener: OnImageListener?){
-    mImageStrategy.loadBlur(url,view,blurRadius,listener)
+    getStrategy().loadBlur(url,view,blurRadius,listener)
 }
 
+/**
+ * 保存网络图片到本地
+ * @param context　上下文
+ * @param any　保存的图片资源
+ */
+fun saveImage(context: Context?, any: Any?){
+    getStrategy().saveImage(context,any)
+}
 
 /**
  * 保存网络图片到本地
@@ -198,7 +191,7 @@ fun loadBlur(url: String?,view: View?,blurRadius:Int,listener: OnImageListener?)
  * @param listener　图片保存的回调
  */
 fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?){
-    mImageStrategy.saveImage(context,any,listener)
+    getStrategy().saveImage(context,any,listener)
 }
 
 /**
@@ -207,7 +200,7 @@ fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?){
  * @param context 上下文
  */
 fun clearImageDiskCache(context: Context?){
-    mImageStrategy.clearImageDiskCache(context)
+    getStrategy().clearImageDiskCache(context)
 }
 
 /**
@@ -216,7 +209,7 @@ fun clearImageDiskCache(context: Context?){
  * @param context 上下文
  */
 fun clearImageMemoryCache(context: Context?){
-    mImageStrategy.clearImageMemoryCache(context)
+    getStrategy().clearImageMemoryCache(context)
 }
 
 /**
@@ -225,7 +218,7 @@ fun clearImageMemoryCache(context: Context?){
  * @return 缓存大小，格式已经处理好了 例如：100M
  */
 fun getCacheSize(context: Context?): String{
-    return mImageStrategy.getCacheSize(context)
+    return getStrategy().getCacheSize(context)
 }
 
 /**
@@ -233,7 +226,7 @@ fun getCacheSize(context: Context?): String{
  * @param context　上下文
  */
 fun resumeRequests(context: Context?){
-    mImageStrategy.resumeRequests(context)
+    getStrategy().resumeRequests(context)
 }
 
 /**
@@ -241,7 +234,7 @@ fun resumeRequests(context: Context?){
  * @param context　上下文
  */
 fun pauseRequests(context: Context?){
-    mImageStrategy.pauseRequests(context)
+    getStrategy().pauseRequests(context)
 }
 
 /**
@@ -251,28 +244,16 @@ fun pauseRequests(context: Context?){
  * @param any　图片的url
  */
 fun download(context: Context, any: Any?): File {
-    return mImageStrategy.download(context,any)
+    return getStrategy().download(context,any)
 }
 
 
 /**
- * 加载图片，带进度条
+ * 获取图片加载策略
  */
-fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
-    return mImageStrategy.loadProgress(url,view,listener)
+private fun getStrategy():ImageStrategy{
+    return ImageEngine.getStrategy()
 }
 
-/**
- * 设置是否打印日志，默认打印日志
- */
-fun setDebug(debug:Boolean){
-    IMAGE_DEBUG = debug
-}
 
-/**
- * 设置是否自动加载Gif图
- * 如果设置自动加载Gif图，直接调用loadImage()方法即可自动区分普通图片和Gif图片
- */
-fun setAutoGif(autoGif:Boolean){
-    IMAGE_AUTO_GIF = autoGif
-}
+

@@ -13,7 +13,7 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
-import com.fungo.imagego.progress.ProgressEngine
+import com.fungo.imagego.strategy.ImageEngine
 import com.fungo.imagego.utils.ImageUtils
 import java.io.InputStream
 
@@ -32,7 +32,7 @@ class GlideConfigModule : AppGlideModule() {
         /**
          * 替换Glide的请求方式，因为要监听图片的加载进度，使用okhttp来加载
          */
-        registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(ProgressEngine.getOkHttpClient()))
+        registry.replace(GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(ImageEngine.getOkHttpClient()))
     }
 
     /**

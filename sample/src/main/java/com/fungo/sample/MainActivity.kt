@@ -1,13 +1,15 @@
 package com.fungo.sample
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.fungo.imagego.*
 import com.fungo.imagego.glide.GlideImageStrategy
-import com.fungo.imagego.glide.transform.RoundType
-import com.fungo.imagego.listener.OnImageSaveListener
+import com.fungo.imagego.listener.OnImageListener
+import com.fungo.imagego.listener.OnProgressListener
+import com.fungo.imagego.strategy.ImageEngine
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -21,14 +23,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        loadRound(mUrl, imageView, 12)
+        onLoadRound(imageView)
 
         rbNormal.isChecked = true
         rbGlide.isChecked = true
 
         rgStrategy.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rbGlide -> setImageStrategy(GlideImageStrategy())
+                R.id.rbGlide -> ImageEngine.setImageStrategy(GlideImageStrategy())
             }
         }
 
@@ -36,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             // 手动区分链接
             isGif = checkedId == R.id.rbGif
             // 自动设置区分gif加载
-            setAutoGif(checkedId == R.id.rbGif)
+            ImageEngine.setAutoGif(checkedId == R.id.rbGif)
         }
     }
 
@@ -51,36 +53,72 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
+    fun onLoadOrigin(view: View) {
+        generateImageView(false)
+        loadImage(getUrl(), imageView)
+    }
+
+
+    fun onLoadBitmap(view: View) {
+        generateImageView(false)
+        loadBitmap(this,getUrl(), object :OnImageListener{
+            override fun onSuccess(bitmap: Bitmap?) {
+                showToast("Bitmap加载成功")
+                imageView.setImageBitmap(bitmap)
+            }
+
+            override fun onFail(msg: String?) {
+                showToast(msg)
+            }
+
+        })
+    }
+
 
     fun onLoadCircle(view: View) {
+        generateImageView(true)
         loadCircle(getUrl(), imageView)
     }
 
+
     fun onLoadRound(view: View) {
+        generateImageView(false)
         loadRound(getUrl(), imageView, 24)
     }
 
-
     fun onLoadBlur(view: View) {
+        generateImageView(false)
         loadBlur(getUrl(), imageView)
     }
 
+
+    /**
+     * 展示进度条
+     */
     fun onLoadProgress(view: View) {
-
-    }
-
-    fun onLoadSave(view: View) {
-        saveImage(this, getUrl(), object : OnImageSaveListener {
-            override fun onSaveSuccess(path: String?) {
-
-            }
-
-            override fun onSaveFail(msg: String?) {
-
+        generateImageView(false)
+        loadProgress(getUrl(),imageView,object :OnProgressListener{
+            override fun onProgress(bytesRead: Long, contentLength: Long, isFinish: Boolean) {
+                progressView.visibility = if(isFinish) View.GONE else View.VISIBLE
+                progressView.progress = (100f * bytesRead / contentLength).toInt()
             }
         })
     }
 
 
+    /**
+     * 保存图片
+     */
+    fun onLoadSave(view: View) {
+        generateImageView(false)
+        saveImage(this, getUrl())
+    }
 
+
+    private fun generateImageView(isSmall:Boolean){
+        val params = imageView.layoutParams
+        params.height = if(isSmall) 300 else resources.displayMetrics.widthPixels*9/16
+        params.width = if(isSmall) 300 else resources.displayMetrics.widthPixels
+        imageView.layoutParams = params
+    }
 }

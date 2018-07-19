@@ -2,9 +2,7 @@ package com.fungo.sample.app
 
 import android.app.Application
 import com.fungo.imagego.glide.GlideImageStrategy
-import com.fungo.imagego.setAutoGif
-import com.fungo.imagego.setDebug
-import com.fungo.imagego.setImageStrategy
+import com.fungo.imagego.strategy.ImageEngine
 import com.github.moduth.blockcanary.BlockCanary
 import com.squareup.leakcanary.LeakCanary
 
@@ -14,7 +12,6 @@ import com.squareup.leakcanary.LeakCanary
  *
  */
 class DemoApplication : Application() {
-
 
     override fun onCreate() {
         super.onCreate()
@@ -30,9 +27,10 @@ class DemoApplication : Application() {
     }
 
     private fun initImageStrategy() {
-        setDebug(true)
-        setAutoGif(true)
-        setImageStrategy(GlideImageStrategy())
+        ImageEngine
+                .setDebug(true)
+                .setAutoGif(true)
+                .setImageStrategy(GlideImageStrategy())
     }
 
 }
