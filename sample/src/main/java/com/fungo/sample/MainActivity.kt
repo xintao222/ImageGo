@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
 
     fun onLoadRound(view: View) {
         generateImageView(false)
-        loadRound(getUrl(), imageView, 24)
+        loadRound(getUrl(), imageView, 48)
     }
 
     fun onLoadBlur(view: View) {
