@@ -4,6 +4,7 @@
 
 ---
 > 使用Kotlin二次封装图片加载框架ImageGo。提供多种API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，全局GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
+>
 > 这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。这个库使用的是kotlin代码编写的，代码量不大。
 
 ## 简单预览
@@ -62,42 +63,42 @@
 ## 代码示例
 * 加载全局图片
 
-	loadImage(Any, View)
-	loadImage(Any, View, OnImageListener)
+        loadImage(Any, View)
+        loadImage(Any, View, OnImageListener)
 
 * 加载GIF图片
 
-	loadGif(Any, View)
-	loadGif(Any, View, OnImageListener)
+        loadGif(Any, View)
+        loadGif(Any, View, OnImageListener)
 
 * 加载Bitmap图片
 
-	loadBitmap(Context,Any,OnImageListener)
+        loadBitmap(Context,Any,OnImageListener)
 
 * 加载进度条图片
 
-	loadProgress(String,View,OnProgressListener)
+        loadProgress(String,View,OnProgressListener)
 
 * 加载圆形图片
 
-	loadCircle(String, View)
-	loadCircle(String, View, borderWidth, borderColor)
+        loadCircle(String, View)
+        loadCircle(String, View, borderWidth, borderColor)
 
 * 加载圆角图片
 
-	loadRound(String, View)
-	loadRound(String, View, roundRadius)
-	loadRound(String, View, roundRadius, roundType)
+        loadRound(String, View)
+        loadRound(String, View, roundRadius)
+        loadRound(String, View, roundRadius, roundType)
 
 * 加载高斯模糊图片
 
-	loadBlur(String, View)
-	loadBlur(String, View, blurRadius)
+        loadBlur(String, View)
+        loadBlur(String, View, blurRadius)
 
 * 保存图片
 
-	saveImage(Context, Any)
-	saveImage(Context, Any, OnImageSaveListener)
+        saveImage(Context, Any)
+        saveImage(Context, Any, OnImageSaveListener)
 
 
 
