@@ -13,7 +13,7 @@ ext {
             appcompat_v7      : 'com.android.support:appcompat-v7:27.1.1',
             design            : 'com.android.support:design:27.1.1',
             constraintlayout  : 'com.android.support.constraint:constraint-layout:1.1.2',
-            kotlin            : 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.30',
+            kotlin            : 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.50',
 
             blockcanary       : 'com.github.markzhai:blockcanary-android:1.5.0',
             leakcanary        : 'com.squareup.leakcanary:leakcanary-android:1.5.4',

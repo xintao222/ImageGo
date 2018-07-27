@@ -2,7 +2,7 @@ package com.fungo.sample.app
 
 import android.app.Application
 import com.fungo.imagego.glide.GlideImageStrategy
-import com.fungo.imagego.strategy.ImageEngine
+import com.fungo.imagego.strategy.ImageGoEngine
 import com.github.moduth.blockcanary.BlockCanary
 import com.squareup.leakcanary.LeakCanary
 
@@ -27,7 +27,7 @@ class DemoApplication : Application() {
     }
 
     private fun initImageStrategy() {
-        ImageEngine
+        ImageGoEngine
                 .setDebug(true)
                 .setAutoGif(true)
                 .setImageStrategy(GlideImageStrategy())

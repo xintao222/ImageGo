@@ -300,5 +300,5 @@ interface ImageStrategy {
      * @param context 上线文
      * @param any　图片的url
      */
-    fun download(context: Context, any: Any?): File
+    fun downloadImage(context: Context, any: Any?): File
 }

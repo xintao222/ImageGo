@@ -8,7 +8,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.widget.Toast
-import com.fungo.imagego.strategy.ImageEngine
+import com.fungo.imagego.strategy.ImageGoEngine
 import java.io.*
 import java.text.DecimalFormat
 import java.util.concurrent.ExecutorService
@@ -224,7 +224,7 @@ object ImageUtils {
      * 打印日志
      */
     fun logD(msg: String) {
-        if (ImageEngine.isDebug()) {
+        if (ImageGoEngine.isDebug()) {
             Log.d("ImageGo", "-----> $msg")
         }
     }
@@ -233,7 +233,7 @@ object ImageUtils {
      * 打印日志
      */
     fun logE(msg: String) {
-        if (ImageEngine.isDebug()) {
+        if (ImageGoEngine.isDebug()) {
             Log.e("ImageGo", "-----> $msg")
         }
     }

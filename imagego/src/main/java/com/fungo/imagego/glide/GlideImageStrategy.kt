@@ -31,7 +31,7 @@ import com.fungo.imagego.glide.transform.RoundedCornersTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.strategy.ImageEngine
+import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
@@ -66,7 +66,7 @@ class GlideImageStrategy : ImageStrategy {
      * 加载图片
      */
     override fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
-        if (ImageEngine.isAutoGif() && any is String && ImageUtils.isGif(any)) {
+        if (ImageGoEngine.isAutoGif() && any is String && ImageUtils.isGif(any)) {
             loadGif(any,view,listener,builder)
         }else{
             loadImage(any, view, builder.setAsGif(false).build(), listener)
@@ -92,7 +92,7 @@ class GlideImageStrategy : ImageStrategy {
             return
         }
         // 添加进度条监听
-        ImageEngine.addProgressListener(listener)
+        ImageGoEngine.addProgressListener(listener)
         // 加载图片
         if (ImageUtils.isGif(url)) {
             loadGif(url,view)
@@ -159,7 +159,7 @@ class GlideImageStrategy : ImageStrategy {
                 // 保存的位置
                 val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
                 // 要保存的原图
-                val imageFile = download(context, any)
+                val imageFile = downloadImage(context, any)
                 // 进行保存
                 val isCopySuccess = ImageUtils.copyFile(imageFile, destFile)
 
@@ -252,7 +252,7 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 缓存图片文件
      */
-    override fun download(context: Context, any: Any?): File {
+    override fun downloadImage(context: Context, any: Any?): File {
         return Glide
                 .with(context)
                 .download(any)

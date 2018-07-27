@@ -17,7 +17,7 @@ import java.util.*
  * 管理进度条的监听集合，提供全局图片加载的okhttp，配置图片加载策略等等
  */
 
-object ImageEngine {
+object ImageGoEngine {
 
     /**
      * 加载进度条的集合，在列表中使用进度条时会出现多个进度监听
@@ -139,17 +139,17 @@ object ImageEngine {
         return mStrategy
     }
 
-    fun setDebug(isDebug:Boolean):ImageEngine{
+    fun setDebug(isDebug:Boolean):ImageGoEngine{
         this.isDebug = isDebug
         return this
     }
 
-    fun setAutoGif(autoGif :Boolean):ImageEngine{
+    fun setAutoGif(autoGif :Boolean):ImageGoEngine{
         this.isAutoGif = autoGif
         return this
     }
 
-    fun setImageStrategy(strategy:ImageStrategy):ImageEngine{
+    fun setImageStrategy(strategy:ImageStrategy):ImageGoEngine{
         this.mStrategy = strategy
         return this
     }

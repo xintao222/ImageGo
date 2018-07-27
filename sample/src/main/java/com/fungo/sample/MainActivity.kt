@@ -9,7 +9,7 @@ import com.fungo.imagego.*
 import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.strategy.ImageEngine
+import com.fungo.imagego.strategy.ImageGoEngine
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         rgStrategy.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.rbGlide -> ImageEngine.setImageStrategy(GlideImageStrategy())
+                R.id.rbGlide -> ImageGoEngine.setImageStrategy(GlideImageStrategy())
             }
         }
 
@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             // 手动区分链接
             isGif = checkedId == R.id.rbGif
             // 自动设置区分gif加载
-            ImageEngine.setAutoGif(checkedId == R.id.rbGif)
+            ImageGoEngine.setAutoGif(checkedId == R.id.rbGif)
         }
     }
 

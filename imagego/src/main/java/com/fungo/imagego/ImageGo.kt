@@ -8,21 +8,21 @@ import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.strategy.ImageEngine
+import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.imagego.strategy.ImageStrategy
 import java.io.File
 
 
-// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
-// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
-// －－－－－－－－－－所有图片加载相关的API－－－－－－－－－
+// －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
+// －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
+// －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
 
 /**
  * 加载网络图片
  * @param any 资源
  * @param view　视图
  */
-fun loadImage(any: Any?,view: View?){
+ fun loadImage(any: Any?,view: View?){
     getStrategy().loadImage(any,view)
 }
 
@@ -243,8 +243,8 @@ fun pauseRequests(context: Context?){
  * @param context 上线文
  * @param any　图片的url
  */
-fun download(context: Context, any: Any?): File {
-    return getStrategy().download(context,any)
+fun downloadImage(context: Context, any: Any?): File {
+    return getStrategy().downloadImage(context,any)
 }
 
 
@@ -252,7 +252,7 @@ fun download(context: Context, any: Any?): File {
  * 获取图片加载策略
  */
 private fun getStrategy():ImageStrategy{
-    return ImageEngine.getStrategy()
+    return ImageGoEngine.getStrategy()
 }
 
 
