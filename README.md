@@ -2,7 +2,7 @@
 # ImageGo(二次图片加载框架)
 [![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo)
 
----
+
 > 使用Kotlin二次封装图片加载框架ImageGo。提供多种API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，全局GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
 >
 > 这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。这个库使用的是kotlin代码编写的，代码量不大。

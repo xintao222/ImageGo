@@ -54,7 +54,7 @@ class ProgressResponseBody(private val responseBody: ResponseBody?, val progress
     private fun source(source: Source): Source {
         return object : ForwardingSource(source) {
             // 接收的字节
-            internal var totalBytesRead: Long = 0
+            var totalBytesRead: Long = 0
             override fun read(sink: Buffer, byteCount: Long): Long {
                 val bytesRead = super.read(sink, byteCount)
                 totalBytesRead += if (bytesRead != (-1).toLong()) bytesRead else 0

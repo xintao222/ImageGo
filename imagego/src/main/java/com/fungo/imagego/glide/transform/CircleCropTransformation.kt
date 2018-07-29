@@ -1,6 +1,5 @@
 package com.fungo.imagego.glide.transform
 
-import android.content.Context
 import android.graphics.*
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
@@ -9,13 +8,12 @@ import java.security.MessageDigest
 
 /**
  * Glide绘制圆形图片，并且可以绘制圆形边框，指定边框颜色
- * @param context　上下文
  * @param borderColor 边框颜色
  * @param borderWidth 边框宽度
  *
  * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/CropCircleTransformation.java]
  */
-class CircleCropTransformation(val context: Context, private val borderWidth: Int = 0
+class CircleCropTransformation(private val borderWidth: Int = 0
                                , borderColor: Int = 0) : BitmapTransformation() {
 
     /**

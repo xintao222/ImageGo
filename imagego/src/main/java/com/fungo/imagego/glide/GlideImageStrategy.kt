@@ -442,7 +442,7 @@ class GlideImageStrategy : ImageStrategy {
         // 设置transform
         // 是否设置圆行特效
         if (config.isCircleCrop) {
-            options.transform(CircleCropTransformation(context,config.circleBorderWidth,config.circleBorderColor))
+            options.transform(CircleCropTransformation(config.circleBorderWidth,config.circleBorderColor))
         }
 
         // 设置高斯模糊特效

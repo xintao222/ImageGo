@@ -49,7 +49,6 @@ object ImageGoEngine {
     }
 
 
-
     /**
      *　监听接口的内部对象，包装一层，外部好做处理
      */
@@ -114,42 +113,42 @@ object ImageGoEngine {
      * 初始化加载策略，在Application中设置
      * 默认使用Glide加载策略
      */
-   private var mStrategy: ImageStrategy = GlideImageStrategy()
+    private var mStrategy: ImageStrategy = GlideImageStrategy()
 
     /**
      * 是否是开发模式，正式环境设置为false
      */
-   private var isDebug = true
+    private var isDebug = true
 
     /**
      * 是否自动加载Gif图
      */
-   private var isAutoGif = false
+    private var isAutoGif = false
 
 
-    fun isDebug(): Boolean{
+    fun isDebug(): Boolean {
         return isDebug
     }
 
-    fun isAutoGif():Boolean{
+    fun isAutoGif(): Boolean {
         return isAutoGif
     }
 
-    fun getStrategy():ImageStrategy{
+    fun getStrategy(): ImageStrategy {
         return mStrategy
     }
 
-    fun setDebug(isDebug:Boolean):ImageGoEngine{
+    fun setDebug(isDebug: Boolean): ImageGoEngine {
         this.isDebug = isDebug
         return this
     }
 
-    fun setAutoGif(autoGif :Boolean):ImageGoEngine{
+    fun setAutoGif(autoGif: Boolean): ImageGoEngine {
         this.isAutoGif = autoGif
         return this
     }
 
-    fun setImageStrategy(strategy:ImageStrategy):ImageGoEngine{
+    fun setImageStrategy(strategy: ImageStrategy): ImageGoEngine {
         this.mStrategy = strategy
         return this
     }

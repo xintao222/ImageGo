@@ -1,4 +1,4 @@
-package com.fungo.sample
+package com.fungo.sample.ui
 
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -10,6 +10,7 @@ import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnProgressListener
 import com.fungo.imagego.strategy.ImageGoEngine
+import com.fungo.sample.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -25,9 +26,6 @@ class MainActivity : AppCompatActivity() {
 
         onLoadRound(imageView)
 
-        rbNormal.isChecked = true
-        rbGlide.isChecked = true
-
         rgStrategy.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rbGlide -> ImageGoEngine.setImageStrategy(GlideImageStrategy())
@@ -40,6 +38,9 @@ class MainActivity : AppCompatActivity() {
             // 自动设置区分gif加载
             ImageGoEngine.setAutoGif(checkedId == R.id.rbGif)
         }
+
+        rbNormal.isChecked = true
+        rbGlide.isChecked = true
     }
 
 
@@ -54,14 +55,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun onLoadOrigin(view: View) {
-        generateImageView(false)
         loadImage(getUrl(), imageView)
     }
 
 
     fun onLoadBitmap(view: View) {
-        generateImageView(false)
-        loadBitmap(this,getUrl(), object :OnImageListener{
+        loadBitmap(this, getUrl(), object : OnImageListener {
             override fun onSuccess(bitmap: Bitmap?) {
                 showToast("Bitmap加载成功")
                 imageView.setImageBitmap(bitmap)
@@ -76,18 +75,15 @@ class MainActivity : AppCompatActivity() {
 
 
     fun onLoadCircle(view: View) {
-        generateImageView(true)
         loadCircle(getUrl(), imageView)
     }
 
 
     fun onLoadRound(view: View) {
-        generateImageView(false)
         loadRound(getUrl(), imageView, 48)
     }
 
     fun onLoadBlur(view: View) {
-        generateImageView(false)
         loadBlur(getUrl(), imageView)
     }
 
@@ -96,10 +92,9 @@ class MainActivity : AppCompatActivity() {
      * 展示进度条
      */
     fun onLoadProgress(view: View) {
-        generateImageView(false)
-        loadProgress(getUrl(),imageView,object :OnProgressListener{
+        loadProgress(getUrl(), imageView, object : OnProgressListener {
             override fun onProgress(bytesRead: Long, contentLength: Long, isFinish: Boolean) {
-                progressView.visibility = if(isFinish) View.GONE else View.VISIBLE
+                progressView.visibility = if (isFinish) View.GONE else View.VISIBLE
                 progressView.progress = (100f * bytesRead / contentLength).toInt()
             }
         })
@@ -110,15 +105,7 @@ class MainActivity : AppCompatActivity() {
      * 保存图片
      */
     fun onLoadSave(view: View) {
-        generateImageView(false)
         saveImage(this, getUrl())
     }
 
-
-    private fun generateImageView(isSmall:Boolean){
-        val params = imageView.layoutParams
-        params.height = if(isSmall) 300 else resources.displayMetrics.widthPixels*9/16
-        params.width = if(isSmall) 300 else resources.displayMetrics.widthPixels
-        imageView.layoutParams = params
-    }
 }
