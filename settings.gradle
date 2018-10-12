@@ -1,1 +1,1 @@
-include ':sample', ':imagego'
+include ':sample', ':library'

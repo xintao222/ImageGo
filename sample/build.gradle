@@ -31,5 +31,5 @@ dependencies {
     implementation rootProject.ext.dependencies.leakcanary
     implementation rootProject.ext.dependencies.blockcanary
 
-    implementation project(":imagego")
+    implementation project(':library')
 }
