@@ -29,7 +29,6 @@ class DemoApplication : Application() {
     private fun initImageStrategy() {
         ImageGoEngine
                 .setDebug(true)
-                .setAutoGif(true)
                 .setImageStrategy(GlideImageStrategy())
     }
 

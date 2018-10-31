@@ -28,14 +28,19 @@ class ImageOptions private constructor() {
     var errorResId = 0
 
     /**
+     * 加载失败占位图资源Drawable对象
+     */
+    var errorDrawable: Drawable? = null
+
+    /**
      * 是否渐隐加载
      */
     var isCrossFade = true
 
     /**
-     * 是否是GIF图片
+     * 是否是GIF图片,是不是Gif图片自动根据后缀来判断，这里改为是否自动加载
      */
-    var asGif: Boolean = false
+    var isAutoGif: Boolean = false
 
 
     /**
@@ -100,20 +105,20 @@ class ImageOptions private constructor() {
     /**
      * 设置高斯模糊度数，如果外面设置为0则使用默认值
      */
-    var blurRadius:Int = 25
+    var blurRadius: Int = 25
 
 
     /**
      * 是否圆角
      * Glide要将isCrossFade设置为false，不然会影响展示效果
      */
-    var isRoundedCorners:Boolean = false
+    var isRoundedCorners: Boolean = false
 
 
     /**
      * 圆角的弧度
      */
-    var roundRadius:Int =  0
+    var roundRadius: Int = 0
 
     /**
      * 圆角的边向
@@ -128,7 +133,9 @@ class ImageOptions private constructor() {
         private val config = ImageOptions()
 
         fun setPlaceHolderResId(placeHolderResId: Int): Builder {
-            config.placeHolderResId = placeHolderResId
+            if (placeHolderResId != -1) {
+                config.placeHolderResId = placeHolderResId
+            }
             return this
         }
 
@@ -138,7 +145,14 @@ class ImageOptions private constructor() {
         }
 
         fun setErrorResId(errorResId: Int): Builder {
-            config.errorResId = errorResId
+            if (errorResId != -1) {
+                config.errorResId = errorResId
+            }
+            return this
+        }
+
+        fun setErrorDrawable(errorDrawable: Drawable): Builder {
+            config.errorDrawable = errorDrawable
             return this
         }
 
@@ -147,8 +161,8 @@ class ImageOptions private constructor() {
             return this
         }
 
-        fun setAsGif(asGif: Boolean): Builder {
-            config.asGif = asGif
+        fun setAutoGif(isAutoGif: Boolean): Builder {
+            config.isAutoGif = isAutoGif
             return this
         }
 
@@ -192,13 +206,17 @@ class ImageOptions private constructor() {
             return this
         }
 
-        fun setCircleBorderWidth(width: Int) : Builder{
-            config.circleBorderWidth = width
+        fun setCircleBorderWidth(width: Int): Builder {
+            if (width != -1) {
+                config.circleBorderWidth = width
+            }
             return this
         }
 
         fun setCircleBorderColor(@ColorInt color: Int): Builder {
-            config.circleBorderColor = color
+            if (color != -1) {
+                config.circleBorderColor = color
+            }
             return this
         }
 
@@ -207,24 +225,26 @@ class ImageOptions private constructor() {
             return this
         }
 
-        fun setBlurRadius(blurRadius:Int): Builder{
-            if (blurRadius!=0) {
+        fun setBlurRadius(blurRadius: Int): Builder {
+            if (blurRadius != -1) {
                 config.blurRadius = blurRadius
             }
             return this
         }
 
-        fun setRoundedCorners(roundedCorners:Boolean): Builder{
+        fun setRoundedCorners(roundedCorners: Boolean): Builder {
             config.isRoundedCorners = roundedCorners
             return this
         }
 
-        fun setRoundRadius(roundRadius:Int): Builder{
-            config.roundRadius = roundRadius
+        fun setRoundRadius(roundRadius: Int): Builder {
+            if (roundRadius != -1) {
+                config.roundRadius = roundRadius
+            }
             return this
         }
 
-        fun setRoundType(roundType: RoundType): Builder{
+        fun setRoundType(roundType: RoundType): Builder {
             config.roundType = roundType
             return this
         }

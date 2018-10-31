@@ -13,7 +13,8 @@ import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.sample.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), View.OnClickListener {
+
 
     private val mUrl = "http://img.mp.itc.cn/upload/20161121/d30e0a4a1f8b418f92e973310885e4ee_th.jpg"
     private val mGif = "http://www.gaoxiaogif.com/d/file/201712/ac2cba0163c27c0f455c22df35794bc8.gif"
@@ -23,9 +24,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        onLoadRound(imageView)
-
+        onLoadRound()
         rgStrategy.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.rbGlide -> ImageGoEngine.setImageStrategy(GlideImageStrategy())
@@ -33,16 +32,37 @@ class MainActivity : AppCompatActivity() {
         }
 
         rgType.setOnCheckedChangeListener { _, checkedId ->
-            // 手动区分链接
             isGif = checkedId == R.id.rbGif
-            // 自动设置区分gif加载
-            ImageGoEngine.setAutoGif(checkedId == R.id.rbGif)
         }
 
         rbNormal.isChecked = true
         rbGlide.isChecked = true
+
+        initEvent()
     }
 
+    private fun initEvent() {
+        tvBitmap.setOnClickListener(this)
+        tvOrigin.setOnClickListener(this)
+        tvCircle.setOnClickListener(this)
+        tvRound.setOnClickListener(this)
+        tvBlur.setOnClickListener(this)
+        tvProgress.setOnClickListener(this)
+        tvSave.setOnClickListener(this)
+    }
+
+
+    override fun onClick(v: View) {
+        when (v) {
+            tvBitmap -> onLoadBitmap()
+            tvOrigin -> onLoadOrigin()
+            tvCircle -> onLoadCircle()
+            tvRound -> onLoadRound()
+            tvBlur -> onLoadBlur()
+            tvProgress -> onLoadProgress()
+            tvSave -> onLoadSave()
+        }
+    }
 
     private fun getUrl(): String {
         return if (isGif) {
@@ -54,12 +74,14 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
-    fun onLoadOrigin(view: View) {
+    private fun onLoadOrigin() {
+        isCircle(false)
         loadImage(getUrl(), imageView)
     }
 
 
-    fun onLoadBitmap(view: View) {
+    private fun onLoadBitmap() {
+        isCircle(false)
         loadBitmap(this, getUrl(), object : OnImageListener {
             override fun onSuccess(bitmap: Bitmap?) {
                 showToast("Bitmap加载成功")
@@ -74,24 +96,38 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-    fun onLoadCircle(view: View) {
-        loadCircle(getUrl(), imageView)
+    private fun onLoadCircle() {
+        isCircle(true)
+        loadCircle(getUrl(), circleImage)
     }
 
 
-    fun onLoadRound(view: View) {
-        loadRound(getUrl(), imageView, 48)
+    private fun onLoadRound() {
+        isCircle(false)
+        loadRound(getUrl(), imageView, 24)
     }
 
-    fun onLoadBlur(view: View) {
+    private fun onLoadBlur() {
+        isCircle(false)
         loadBlur(getUrl(), imageView)
+    }
+
+
+    private fun isCircle(isCircle: Boolean) {
+        if (isCircle) {
+            circleImage.visibility = View.VISIBLE
+            imageView.visibility = View.GONE
+        } else {
+            circleImage.visibility = View.GONE
+            imageView.visibility = View.VISIBLE
+        }
     }
 
 
     /**
      * 展示进度条
      */
-    fun onLoadProgress(view: View) {
+    private fun onLoadProgress() {
         loadProgress(getUrl(), imageView, object : OnProgressListener {
             override fun onProgress(bytesRead: Long, contentLength: Long, isFinish: Boolean) {
                 progressView.visibility = if (isFinish) View.GONE else View.VISIBLE
@@ -104,7 +140,7 @@ class MainActivity : AppCompatActivity() {
     /**
      * 保存图片
      */
-    fun onLoadSave(view: View) {
+    private fun onLoadSave() {
         saveImage(this, getUrl())
     }
 

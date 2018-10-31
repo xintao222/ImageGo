@@ -15,22 +15,31 @@
         app:layout_constraintDimensionRatio="w,9:16"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
 
 
         <ImageView
-            android:layout_gravity="center"
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:layout_gravity="center"
+            android:scaleType="centerCrop" />
+
+
+        <ImageView
+            android:id="@+id/circleImage"
+            android:layout_width="96dp"
+            android:layout_height="96dp"
+            android:layout_gravity="center"
+            android:scaleType="centerCrop" />
+
 
         <com.fungo.sample.widget.CircleProgressView
             android:id="@+id/progressView"
-            android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"/>
+            android:layout_gravity="center"
+            android:visibility="gone" />
 
 
     </FrameLayout>
@@ -40,15 +49,15 @@
         android:id="@+id/tvStrategyType"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="12dp"
         android:gravity="center_vertical"
         android:text="加载策略："
-        android:visibility="gone"
-        app:layout_constraintTop_toBottomOf="@+id/container"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginStart="12dp"
         android:textColor="@android:color/white"
         android:textSize="16sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/container"
         tools:visibility="visible" />
 
     <RadioGroup
@@ -56,17 +65,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:visibility="visible"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvStrategyType"
         app:layout_constraintLeft_toRightOf="@+id/tvStrategyType"
-        app:layout_constraintTop_toTopOf="@+id/tvStrategyType">
+        app:layout_constraintTop_toTopOf="@+id/tvStrategyType"
+        tools:visibility="visible">
 
         <RadioButton
             android:id="@+id/rbGlide"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="Glide"
             android:textColor="@android:color/white" />
 
@@ -74,7 +83,7 @@
             android:id="@+id/rbPicasso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="Picasso"
             android:textColor="@android:color/white" />
 
@@ -82,7 +91,7 @@
             android:id="@+id/rbFresco"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="Fresco"
             android:textColor="@android:color/white" />
 
@@ -90,19 +99,19 @@
     </RadioGroup>
 
     <TextView
-        android:layout_marginStart="12dp"
-        app:layout_goneMarginTop="12dp"
         android:id="@+id/tvImageType"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="12dp"
         android:layout_marginTop="12dp"
+        android:layout_marginBottom="8dp"
         android:gravity="center_vertical"
         android:text="图片类型："
-        app:layout_constraintStart_toStartOf="parent"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/tvStrategyType" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvStrategyType"
+        app:layout_goneMarginTop="12dp" />
 
     <RadioGroup
         android:id="@+id/rgType"
@@ -117,7 +126,7 @@
             android:id="@+id/rbNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="普通图片"
             android:textColor="@android:color/white" />
 
@@ -125,63 +134,60 @@
             android:id="@+id/rbGif"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
             android:text="GIF图片"
             android:textColor="@android:color/white" />
 
     </RadioGroup>
 
-   <android.support.constraint.ConstraintLayout
-       android:id="@+id/conLine1"
-       android:layout_width="match_parent"
-       android:layout_marginTop="24dp"
-       app:layout_constraintTop_toBottomOf="@+id/tvImageType"
-       app:layout_constraintStart_toStartOf="parent"
-       app:layout_constraintEnd_toEndOf="parent"
-       android:layout_height="wrap_content">
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/conLine1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvImageType">
 
-       <TextView
-           android:id="@+id/tvOrigin"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:background="@drawable/shader_btn_border"
-           android:onClick="onLoadOrigin"
-           android:paddingBottom="4dp"
-           android:paddingLeft="12dp"
-           android:paddingRight="12dp"
-           android:paddingTop="4dp"
-           android:text="原图"
-           app:layout_constraintEnd_toStartOf="@+id/tvBitmap"
-           android:textColor="@android:color/white"
-           app:layout_constraintStart_toStartOf="parent"/>
-
-
-       <TextView
-           android:id="@+id/tvBitmap"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:background="@drawable/shader_btn_border"
-           app:layout_constraintStart_toEndOf="@+id/tvOrigin"
-           android:onClick="onLoadBitmap"
-           android:paddingBottom="4dp"
-           android:paddingLeft="12dp"
-           android:paddingRight="12dp"
-           android:paddingTop="4dp"
-           android:text="Bitmap图"
-           app:layout_constraintEnd_toEndOf="parent"
-           android:textColor="@android:color/white"/>
+        <TextView
+            android:id="@+id/tvOrigin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shader_btn_border"
+            android:paddingLeft="12dp"
+            android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
+            android:text="原图"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toStartOf="@+id/tvBitmap"
+            app:layout_constraintStart_toStartOf="parent" />
 
 
+        <TextView
+            android:id="@+id/tvBitmap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/shader_btn_border"
+            android:paddingLeft="12dp"
+            android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
+            android:text="Bitmap图"
+            android:textColor="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/tvOrigin" />
 
-   </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        app:layout_constraintTop_toBottomOf="@+id/conLine1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
-        android:layout_height="wrap_content">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/conLine1">
 
         <TextView
             android:id="@+id/tvCircle"
@@ -189,15 +195,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:background="@drawable/shader_btn_border"
-            android:onClick="onLoadCircle"
-            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
             android:text="圆形"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toStartOf="@+id/tvRound"
-            app:layout_constraintStart_toStartOf="parent"/>
+            app:layout_constraintStart_toStartOf="parent" />
 
 
         <TextView
@@ -205,41 +210,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shader_btn_border"
-            android:onClick="onLoadRound"
-            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
             android:text="圆角"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toStartOf="@+id/tvBlur"
-            app:layout_constraintStart_toEndOf="@+id/tvCircle"/>
+            app:layout_constraintStart_toEndOf="@+id/tvCircle" />
 
         <TextView
             android:id="@+id/tvBlur"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shader_btn_border"
-            android:onClick="onLoadBlur"
-            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
             android:text="模糊"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toStartOf="@+id/tvProgress"
-            app:layout_constraintStart_toEndOf="@+id/tvRound"/>
+            app:layout_constraintStart_toEndOf="@+id/tvRound" />
 
         <TextView
             android:id="@+id/tvProgress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shader_btn_border"
-            android:onClick="onLoadProgress"
-            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
             android:text="进度条"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toStartOf="@+id/tvSave"
@@ -250,15 +252,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/shader_btn_border"
-            android:onClick="onLoadSave"
-            android:paddingBottom="4dp"
             android:paddingLeft="12dp"
-            android:paddingRight="12dp"
             android:paddingTop="4dp"
+            android:paddingRight="12dp"
+            android:paddingBottom="4dp"
             android:text="保存"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/tvProgress"/>
+            app:layout_constraintStart_toEndOf="@+id/tvProgress" />
 
     </android.support.constraint.ConstraintLayout>
 

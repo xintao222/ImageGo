@@ -31,6 +31,7 @@ import com.fungo.imagego.glide.transform.RoundedCornersTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
+import com.fungo.imagego.progress.ProgressEngine
 import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
@@ -50,55 +51,34 @@ class GlideImageStrategy : ImageStrategy {
 
     /**
      * 获取默认的配置,可以手动配置
+     * 使用默认的加载和加载失败的占位图
+     * 设置缓存策略为默认策略
+     * 设置加载优先级为普通优先级
+     * 设置加载渐变动画
+     * 设置自动加载Gif图
      */
-    override fun getBuilder(): ImageOptions.Builder {
+    override fun getDefaultBuilder(): ImageOptions.Builder {
         return ImageOptions
                 .Builder()
                 .setPlaceHolderDrawable(ColorDrawable(Color.parseColor(ImageConstant.IMAGE_PLACE_HOLDER_COLOR)))
                 .setDiskCacheStrategy(ImageOptions.DiskCache.AUTOMATIC)
                 .setPriority(ImageOptions.LoadPriority.NORMAL)
                 .setCrossFade(true)
-                .setAsGif(false)
+                .setAutoGif(true)
     }
-
-
-    /**
-     * 加载图片
-     */
-    override fun loadImage(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
-        if (ImageGoEngine.isAutoGif() && any is String && ImageUtils.isGif(any)) {
-            loadGif(any,view,listener,builder)
-        }else{
-            loadImage(any, view, builder.setAsGif(false).build(), listener)
-        }
-    }
-
-
-    /**
-     * 加载Gif图
-     */
-    override fun loadGif(any: Any?, view: View?, listener: OnImageListener?,builder:ImageOptions.Builder) {
-        loadImage(any, view, builder.setAsGif(true).build(), listener)
-    }
-
 
     /**
      * 加载进度条图片
      */
-    override fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
-        if (view == null || url == null) {
-            listener.onProgress(0,0,false)
+    override fun loadProgress(any: Any?, view: View?, listener: OnProgressListener) {
+        if (view == null || any == null) {
+            listener.onProgress(0, 0, false)
             ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
             return
         }
         // 添加进度条监听
-        ImageGoEngine.addProgressListener(listener)
-        // 加载图片
-        if (ImageUtils.isGif(url)) {
-            loadGif(url,view)
-        }else{
-            loadImage(url,view)
-        }
+        ProgressEngine.addProgressListener(listener)
+        loadImage(any, view, null, getDefaultBuilder().build())
     }
 
 
@@ -125,7 +105,7 @@ class GlideImageStrategy : ImageStrategy {
                 ImageUtils.runOnUIThread(Runnable {
                     listener.onSuccess(bitmap)
                 })
-            }catch (e:Exception){
+            } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
                     listener.onFail(ImageConstant.LOAD_ERROR)
                 })
@@ -133,15 +113,35 @@ class GlideImageStrategy : ImageStrategy {
         })
     }
 
+
+    /**
+     * 子线程同步获取Bitmap对象
+     */
+    override fun loadBitmap(context: Context?, any: Any?): Bitmap? {
+        if (context == null || any == null) {
+            ImageUtils.logD(ImageConstant.LOAD_NULL_CONTEXT_ANY)
+            return null
+        }
+        // submit方法要在子线程调用
+        return Glide
+                .with(context)
+                .asBitmap()
+                .load(any)
+                .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                .get()
+    }
+
+
     /**
      * 保存图片到本地
      * 可以在主线程调用
      */
     override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
         if (context == null || any == null) {
-            if (listener==null) {
-                ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
-            }else{
+            if (listener == null) {
+                ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
+            } else {
                 listener.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             }
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
@@ -169,24 +169,24 @@ class GlideImageStrategy : ImageStrategy {
                 // 主线程回调
                 ImageUtils.runOnUIThread(Runnable {
                     if (isCopySuccess) {
-                        if (listener==null) {
-                            ImageUtils.showToast(context,ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context),Toast.LENGTH_LONG)
-                        }else{
+                        if (listener == null) {
+                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context), Toast.LENGTH_LONG)
+                        } else {
                             listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
                         }
                     } else {
-                        if (listener==null) {
-                            ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
-                        }else{
+                        if (listener == null) {
+                            ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
+                        } else {
                             listener.onSaveFail(ImageConstant.SAVE_FAIL)
                         }
                     }
                 })
             } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
-                    if (listener==null) {
-                        ImageUtils.showToast(context,ImageConstant.SAVE_FAIL)
-                    }else{
+                    if (listener == null) {
+                        ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
+                    } else {
                         listener.onSaveFail(ImageConstant.SAVE_FAIL)
                     }
                     ImageUtils.logE(ImageConstant.SAVE_FAIL + ": " + e.message)
@@ -267,7 +267,7 @@ class GlideImageStrategy : ImageStrategy {
      * @param config 图片配置
      * @param listener 图片加载回调
      */
-    private fun loadImage(any: Any?, view: View?, config: ImageOptions, listener: OnImageListener?) {
+    override fun loadImage(any: Any?, view: View?, listener: OnImageListener?, config: ImageOptions) {
         // any和view判空
         if (any == null || view == null) {
             listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
@@ -283,15 +283,16 @@ class GlideImageStrategy : ImageStrategy {
             return
         }
 
+
         try {
-            // 作为Gif图片加载
-            if (config.asGif) {
+            // 是Gif图片，并且支持加载才去加载图片，不是Gif图不加载，不自动加载也不加载
+            if (ImageUtils.isGif(any) && config.isAutoGif) {
                 val gifBuilder = Glide.with(context).asGif().load(any)
                 val builder = buildGift(context, any, config, gifBuilder, listener)
 
                 // 使用clone方法复用builder，有缓存不会请求网络
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(view,context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view, context, any, config)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
 
             } else {
@@ -299,7 +300,7 @@ class GlideImageStrategy : ImageStrategy {
                 val builder = buildBitmap(context, any, config, bitmapBuilder, listener)
 
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(view,context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view, context, any, config)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
             }
         } catch (e: Exception) {
@@ -384,7 +385,7 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置图片加载选项，返回请求对象
      */
-    private fun buildOptions(view:View,context: Context, obj: Any, config: ImageOptions): RequestOptions {
+    private fun buildOptions(view: View, context: Context, obj: Any, config: ImageOptions): RequestOptions {
         val options = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
@@ -435,14 +436,14 @@ class GlideImageStrategy : ImageStrategy {
         }
 
         // 设置固定的宽高
-        if (config.size!=null) {
-            options.override(config.size!!.width,config.size!!.height)
+        if (config.size != null) {
+            options.override(config.size!!.width, config.size!!.height)
         }
 
         // 设置transform
         // 是否设置圆行特效
         if (config.isCircleCrop) {
-            options.transform(CircleCropTransformation(config.circleBorderWidth,config.circleBorderColor))
+            options.transform(CircleCropTransformation(config.circleBorderWidth, config.circleBorderColor))
         }
 
         // 设置高斯模糊特效
@@ -451,19 +452,19 @@ class GlideImageStrategy : ImageStrategy {
         }
 
         // 是否设置圆角特效
-        if(config.isRoundedCorners){
-            var transformation:BitmapTransformation?=null
+        if (config.isRoundedCorners) {
+            var transformation: BitmapTransformation? = null
             // 圆角特效受到ImageView的scaleType属性影响
             if (view is ImageView && (view.scaleType == ImageView.ScaleType.FIT_CENTER ||
-                            view.scaleType == ImageView.ScaleType.CENTER_INSIDE||
+                            view.scaleType == ImageView.ScaleType.CENTER_INSIDE ||
                             view.scaleType == ImageView.ScaleType.CENTER ||
-                            view.scaleType == ImageView.ScaleType.CENTER_CROP )) {
+                            view.scaleType == ImageView.ScaleType.CENTER_CROP)) {
                 transformation = CenterCrop()
             }
-            if (transformation==null) {
-                options.transform(RoundedCornersTransformation(config.roundRadius,config.roundType))
-            }else{
-                options.transforms(CenterCrop(),RoundedCornersTransformation(config.roundRadius,config.roundType))
+            if (transformation == null) {
+                options.transform(RoundedCornersTransformation(config.roundRadius, config.roundType))
+            } else {
+                options.transforms(CenterCrop(), RoundedCornersTransformation(config.roundRadius, config.roundType))
             }
         }
         return options

@@ -3,12 +3,14 @@
 package com.fungo.imagego
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.view.View
 import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
 import com.fungo.imagego.strategy.ImageGoEngine
+import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 import java.io.File
 
@@ -17,171 +19,166 @@ import java.io.File
 // －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
 // －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
 
-/**
- * 加载网络图片
- * @param any 资源
- * @param view　视图
- */
- fun loadImage(any: Any?,view: View?){
-    getStrategy().loadImage(any,view)
-}
 
-/**
- * 加载网络图片
- * @param any 资源
- * @param view　视图
- * @param listener　监听
- */
-fun loadImage(any: Any?,view: View?,listener: OnImageListener?){
-    getStrategy().loadImage(any,view,listener)
+//============================================================================
+fun loadImage(any: Any?, view: View?) {
+    loadImage(any, view, null)
 }
 
 
-/**
- * 加载Gif图片
- * @param any　资源
- * @param view　视图
- */
-fun loadGif(any: Any?, view: View?){
-    getStrategy().loadGif(any,view)
+fun loadImage(any: Any?, view: View?, listener: OnImageListener?) {
+    loadImage(any, view, -1, listener)
+}
+
+
+fun loadImage(any: Any?, view: View?, placeHolder: Int) {
+    loadImage(any, view, placeHolder, null)
+}
+
+fun loadImage(any: Any?, view: View?, placeholder: Int, listener: OnImageListener?) {
+    loadImage(any, view, listener, getDefaultBuilder().setPlaceHolderResId(placeholder).build())
+}
+
+
+fun loadImage(any: Any?, view: View?, options: ImageOptions) {
+    loadImage(any, view, null, options)
 }
 
 
 /**
- * 加载Gif
- * @param any　资源
- * @param view　视图
- * @param listener　监听
+ * 加载网络图片，可以配置加载监听，和其他Options配置项
+ * @param any 图片资源
+ * @param view 展示的View
+ * @param listener 监听加载对象
+ * @param options 图片加载配置项
  */
-fun loadGif(any: Any?, view: View?,listener: OnImageListener?){
-    getStrategy().loadGif(any,view,listener)
+fun loadImage(any: Any?, view: View?, listener: OnImageListener?, options: ImageOptions) {
+    getStrategy().loadImage(any, view, listener, options)
 }
 
 
-
+//============================================================================
 /**
  * 加载图片，带进度条
+ * @param any 图片资源
+ * @param view 展示的View
+ * @param listener 加载监听
  */
-fun loadProgress(url: String?, view: View?, listener: OnProgressListener) {
-    return getStrategy().loadProgress(url,view,listener)
+fun loadProgress(any: Any?, view: View?, listener: OnProgressListener) {
+    getStrategy().loadProgress(any, view, listener)
 }
 
 
+//============================================================================
 /**
- * 加载图片资源，生成Bitmap对象
+ * 异步加载图片资源，生成Bitmap对象
+ * 可以在主线程直接调用
  * @param context 上下文
  * @param any 图片资源
  * @param listener　加载图片的回调
  */
-fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener){
-    getStrategy().loadBitmap(context,any,listener)
+fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener) {
+    getStrategy().loadBitmap(context, any, listener)
 }
 
+
 /**
- * 加载圆形图片
- * @param url 图片链接
- * @param view　图片
+ * 同步加载图片资源，生成Bitmap对象
+ * 必须在子线程调用，并且处理异常
+ * @param context 上下文
+ * @param any 图片资源
+ * @return Bitmap对象，可能为null
  */
-fun loadCircle(url:String?,view:View?){
-    getStrategy().loadCircle(url,view)
+fun loadBitmap(context: Context?, any: Any?): Bitmap? {
+    return getStrategy().loadBitmap(context, any)
+}
+
+
+//============================================================================
+fun loadCircle(any: Any?, view: View?) {
+    loadCircle(any, view, -1, -1)
+}
+
+fun loadCircle(any: Any?, view: View?, borderWidth: Int, borderColor: Int) {
+    loadCircle(any, view, borderWidth, borderColor, null)
 }
 
 
 /**
  * 加载圆形图片
- * @param url 图片链接
+ * @param any 图片资源
  * @param view　展示视图
- * @param borderColor　边框的颜色
  * @param borderWidth　边框的大小
- */
-fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int){
-    getStrategy().loadCircle(url,view,borderWidth,borderColor)
-}
-
-
-/**
- * 加载圆形图片
- * @param url 图片链接
- * @param view　展示视图
  * @param borderColor　边框的颜色
- * @param borderWidth　边框的大小
- * @param listener　回调
+ * @param listener　加载回调
  */
-fun loadCircle(url:String?,view:View?,borderWidth:Int,borderColor:Int,listener: OnImageListener?){
-    getStrategy().loadCircle(url,view,borderWidth,borderColor,listener)
+fun loadCircle(any: Any?, view: View?, borderWidth: Int, borderColor: Int, listener: OnImageListener?) {
+    loadImage(any, view, listener, getDefaultBuilder()
+            .setCrossFade(false)
+            .setCircleCrop(true)
+            .setCircleBorderColor(borderColor)
+            .setCircleBorderWidth(borderWidth).build())
+}
+
+
+//============================================================================
+fun loadRound(any: Any?, view: View?) {
+    loadRound(any, view, -1)
+}
+
+
+fun loadRound(any: Any?, view: View?, roundRadius: Int) {
+    loadRound(any, view, roundRadius, RoundType.ALL)
+}
+
+fun loadRound(any: Any?, view: View?, roundRadius: Int, roundType: RoundType) {
+    loadRound(any, view, roundRadius, roundType, null)
 }
 
 /**
  * 加载圆角图片
- * @param url 资源
- * @param view 视图
- */
-fun loadRound(url: String?,view: View?){
-    getStrategy().loadRound(url,view)
-}
-
-/**
- * 加载圆角图片
- * @param url 资源
- * @param view 视图
- * @param roundRadius　圆角的角度
- */
-fun loadRound(url: String?,view: View?,roundRadius:Int){
-    getStrategy().loadRound(url,view,roundRadius)
-}
-
-
-/**
- * 加载圆角图片
- * @param url 图片链接
- * @param view 展示
- * @param roundRadius　圆角的角度
- * @param roundType　圆角图片的边向
- */
-fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType){
-    getStrategy().loadRound(url,view,roundRadius,roundType)
-}
-
-/**
- * 加载圆角图片
- * @param url 图片链接
+ * @param any 图片链接
  * @param view 展示
  * @param roundRadius　圆角的角度
  * @param roundType　圆角图片的边向
  * @param listener 回调
  */
-fun loadRound(url: String?, view: View?, roundRadius:Int, roundType: RoundType, listener: OnImageListener?){
-    getStrategy().loadRound(url,view,roundRadius,roundType,listener)
+fun loadRound(any: Any?, view: View?, roundRadius: Int, roundType: RoundType, listener: OnImageListener?) {
+    loadImage(any, view, listener, getDefaultBuilder()
+            .setCrossFade(false)
+            .setRoundedCorners(true)
+            .setRoundRadius(roundRadius)
+            .setRoundType(roundType).build())
 }
 
 
-/**
- * 加载高斯模糊图片
- * @param url　图片链接
- * @param view　展示
- */
-fun loadBlur(url: String?,view: View?){
-    getStrategy().loadBlur(url,view)
+//============================================================================
+
+fun loadBlur(any: Any?, view: View?) {
+    loadBlur(any, view, -1)
+}
+
+fun loadBlur(any: Any?, view: View?, blurRadius: Int) {
+    loadBlur(any, view, blurRadius, null)
 }
 
 /**
  * 加载高斯模糊图片
- * @param url　图片链接
+ * @param any　图片链接
  * @param view　展示
  * @param blurRadius　高斯模糊的度数
  * @param listener 回调
  */
-fun loadBlur(url: String?,view: View?,blurRadius:Int,listener: OnImageListener?){
-    getStrategy().loadBlur(url,view,blurRadius,listener)
+fun loadBlur(any: Any?, view: View?, blurRadius: Int, listener: OnImageListener?) {
+    loadImage(any, view, listener, getDefaultBuilder()
+            .setBlur(true)
+            .setBlurRadius(blurRadius).build())
 }
 
-/**
- * 保存网络图片到本地
- * @param context　上下文
- * @param any　保存的图片资源
- */
-fun saveImage(context: Context?, any: Any?){
-    getStrategy().saveImage(context,any)
+
+//============================================================================
+fun saveImage(context: Context?, any: Any?) {
+    saveImage(context, any, null)
 }
 
 /**
@@ -190,16 +187,18 @@ fun saveImage(context: Context?, any: Any?){
  * @param any　保存的图片资源
  * @param listener　图片保存的回调
  */
-fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?){
-    getStrategy().saveImage(context,any,listener)
+fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
+    getStrategy().saveImage(context, any, listener)
 }
+
+//============================================================================
 
 /**
  * 清除图片的磁盘缓存
  * 必须在子线程调用
  * @param context 上下文
  */
-fun clearImageDiskCache(context: Context?){
+fun clearImageDiskCache(context: Context?) {
     getStrategy().clearImageDiskCache(context)
 }
 
@@ -208,7 +207,7 @@ fun clearImageDiskCache(context: Context?){
  * 必须在主线程调用
  * @param context 上下文
  */
-fun clearImageMemoryCache(context: Context?){
+fun clearImageMemoryCache(context: Context?) {
     getStrategy().clearImageMemoryCache(context)
 }
 
@@ -217,15 +216,17 @@ fun clearImageMemoryCache(context: Context?){
  * @param context　上下文
  * @return 缓存大小，格式已经处理好了 例如：100M
  */
-fun getCacheSize(context: Context?): String{
+fun getCacheSize(context: Context?): String {
     return getStrategy().getCacheSize(context)
 }
+
+//============================================================================
 
 /**
  * 恢复所有的图片加载任务，可以在页面或者列表可见时调用
  * @param context　上下文
  */
-fun resumeRequests(context: Context?){
+fun resumeRequests(context: Context?) {
     getStrategy().resumeRequests(context)
 }
 
@@ -233,27 +234,43 @@ fun resumeRequests(context: Context?){
  * 暂停所有的图片加载任务，可以在页面或者列表不可见的时候调用
  * @param context　上下文
  */
-fun pauseRequests(context: Context?){
+fun pauseRequests(context: Context?) {
     getStrategy().pauseRequests(context)
 }
+
+
+//============================================================================
 
 /**
  * 下载网络图片到本地
  * 本方法在子线程执行
  * @param context 上线文
- * @param any　图片的url
+ * @param any　图片资源
  */
 fun downloadImage(context: Context, any: Any?): File {
-    return getStrategy().downloadImage(context,any)
+    return getStrategy().downloadImage(context, any)
+}
+
+
+//============================================================================
+//============================================================================
+
+/**
+ * 获取默认的配置,可以手动配置
+ */
+private fun getDefaultBuilder(): ImageOptions.Builder {
+    return getStrategy().getDefaultBuilder()
 }
 
 
 /**
  * 获取图片加载策略
  */
-private fun getStrategy():ImageStrategy{
+private fun getStrategy(): ImageStrategy {
     return ImageGoEngine.getStrategy()
 }
+
+
 
 
 
