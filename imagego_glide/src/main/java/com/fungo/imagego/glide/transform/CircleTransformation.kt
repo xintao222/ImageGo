@@ -13,8 +13,8 @@ import java.security.MessageDigest
  *
  * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/CropCircleTransformation.java]
  */
-class CircleCropTransformation(private val borderWidth: Int = 0
-                               , borderColor: Int = 0) : BitmapTransformation() {
+class CircleTransformation(private val borderWidth: Int = 0
+                           , borderColor: Int = 0) : BitmapTransformation() {
 
     /**
      * 绘制边框的画笔
@@ -53,22 +53,25 @@ class CircleCropTransformation(private val borderWidth: Int = 0
         if (result == null) {
             result = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         }
-        // 画图
-        val canvas = Canvas(result)
 
-        val paint = Paint()
-        // 设置shader
-        paint.shader = BitmapShader(squared, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
-        // 抗锯齿
-        paint.isAntiAlias = true
+        if (result != null) {
+            // 画图
+            val canvas = Canvas(result)
 
-        val r = size / 2f
-        // 用设置好的画笔绘制一个圆
-        canvas.drawCircle(r, r, r, paint)
+            val paint = Paint()
+            // 设置shader
+            paint.shader = BitmapShader(squared, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+            // 抗锯齿
+            paint.isAntiAlias = true
 
-        val borderRadius = r - borderWidth / 2
-        // 画边框
-        canvas.drawCircle(r, r, borderRadius, mBorderPaint)
+            val r = size / 2f
+            // 用设置好的画笔绘制一个圆
+            canvas.drawCircle(r, r, r, paint)
+
+            val borderRadius = r - borderWidth / 2
+            // 画边框
+            canvas.drawCircle(r, r, borderRadius, mBorderPaint)
+        }
         return result
     }
 

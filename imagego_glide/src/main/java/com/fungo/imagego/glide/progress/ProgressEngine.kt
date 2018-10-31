@@ -1,4 +1,4 @@
-package com.fungo.imagego.progress
+package com.fungo.imagego.glide.progress
 
 import com.fungo.imagego.listener.OnProgressListener
 import okhttp3.Interceptor

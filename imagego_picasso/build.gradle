@@ -1,6 +1,5 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.github.PingerOne'
@@ -33,8 +32,6 @@ dependencies {
 
     api project(":imagego_core")
 
-    // Glide依赖
-    implementation rootProject.ext.dependencies.glide
-    implementation rootProject.ext.dependencies.glide_okhttp3
-    kapt rootProject.ext.dependencies.glide_compiler
+    // Picasso依赖
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }

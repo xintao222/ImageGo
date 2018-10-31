@@ -27,10 +27,6 @@ dependencies {
     implementation rootProject.ext.dependencies.kotlin
     implementation rootProject.ext.dependencies.appcompat_v7
     implementation rootProject.ext.dependencies.constraintlayout
-
-    implementation rootProject.ext.dependencies.leakcanary
-    implementation rootProject.ext.dependencies.blockcanary
-
-    implementation project(':imagego_core')
     implementation project(':imagego_glide')
+    implementation project(':imagego_picasso')
 }

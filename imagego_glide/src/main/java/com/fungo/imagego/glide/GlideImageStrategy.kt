@@ -1,6 +1,7 @@
 package com.fungo.imagego.glide
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -25,14 +26,13 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
+import com.fungo.imagego.glide.progress.ProgressEngine
 import com.fungo.imagego.glide.transform.BlurTransformation
-import com.fungo.imagego.glide.transform.CircleCropTransformation
+import com.fungo.imagego.glide.transform.CircleTransformation
 import com.fungo.imagego.glide.transform.RoundedCornersTransformation
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.progress.ProgressEngine
-import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 import com.fungo.imagego.utils.ImageConstant
@@ -264,10 +264,10 @@ class GlideImageStrategy : ImageStrategy {
      * Glide加载图片的主要方法
      * @param any 图片资源
      * @param view 图片展示控件
-     * @param config 图片配置
+     * @param options 图片配置
      * @param listener 图片加载回调
      */
-    override fun loadImage(any: Any?, view: View?, listener: OnImageListener?, config: ImageOptions) {
+    override fun loadImage(any: Any?, view: View?, listener: OnImageListener?, options: ImageOptions) {
         // any和view判空
         if (any == null || view == null) {
             listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
@@ -286,27 +286,27 @@ class GlideImageStrategy : ImageStrategy {
 
         try {
             // 是Gif图片，并且支持加载才去加载图片，不是Gif图不加载，不自动加载也不加载
-            if (ImageUtils.isGif(any) && config.isAutoGif) {
+            if (ImageUtils.isGif(any) && options.isAutoGif) {
                 val gifBuilder = Glide.with(context).asGif().load(any)
-                val builder = buildGift(context, any, config, gifBuilder, listener)
+                val builder = buildGift(context, any, options, gifBuilder, listener)
 
                 // 使用clone方法复用builder，有缓存不会请求网络
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(view, context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view, context, any, options)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
 
             } else {
                 val bitmapBuilder = Glide.with(context).asBitmap().load(any)
-                val builder = buildBitmap(context, any, config, bitmapBuilder, listener)
+                val builder = buildBitmap(context, any, options, bitmapBuilder, listener)
 
                 if (view is ImageView) {
-                    builder.clone().apply(buildOptions(view, context, any, config)).into(view)
+                    builder.clone().apply(buildOptions(view, context, any, options)).into(view)
                 } else throw IllegalStateException(ImageConstant.LOAD_ERROR_VIEW_TYPE)
             }
         } catch (e: Exception) {
             listener?.onFail(ImageConstant.LOAD_ERROR + "：" + e.message)
             if (view is ImageView) {
-                view.setImageResource(config.errorResId)
+                view.setImageResource(options.errorResId)
             }
         }
     }
@@ -315,21 +315,22 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置bitmap属性
      */
-    private fun buildBitmap(context: Context, obj: Any, config: ImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
+    @SuppressLint("CheckResult")
+    private fun buildBitmap(context: Context, obj: Any, options: ImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
         var builder = bitmapBuilder
         // 渐变展示
-        if (config.isCrossFade) {
+        if (options.isCrossFade) {
             builder.transition(BitmapTransitionOptions.withCrossFade())
         }
 
         // 缩略图大小
-        if (config.thumbnail > 0f) {
-            builder.thumbnail(config.thumbnail)
+        if (options.thumbnail > 0f) {
+            builder.thumbnail(options.thumbnail)
         }
 
         // 缩略图请求
-        if (!TextUtils.isEmpty(config.thumbnailUrl)) {
-            val thumbnailBuilder = Glide.with(context).asBitmap().load(obj).thumbnail(Glide.with(context).asBitmap().load(config.thumbnailUrl))
+        if (!TextUtils.isEmpty(options.thumbnailUrl)) {
+            val thumbnailBuilder = Glide.with(context).asBitmap().load(obj).thumbnail(Glide.with(context).asBitmap().load(options.thumbnailUrl))
             builder = thumbnailBuilder
         }
 
@@ -352,17 +353,18 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置Gift属性
      */
-    private fun buildGift(context: Context, obj: Any, config: ImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
+    @SuppressLint("CheckResult")
+    private fun buildGift(context: Context, obj: Any, options: ImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
         var builder = gifBuilder
 
         // 缩略图大小
-        if (config.thumbnail > 0f) {
-            builder.thumbnail(config.thumbnail)
+        if (options.thumbnail > 0f) {
+            builder.thumbnail(options.thumbnail)
         }
 
         // 缩略图请求
-        if (!TextUtils.isEmpty(config.thumbnailUrl)) {
-            val thumbnailBuilder = Glide.with(context).asGif().load(obj).thumbnail(Glide.with(context).asGif().load(config.thumbnailUrl))
+        if (!TextUtils.isEmpty(options.thumbnailUrl)) {
+            val thumbnailBuilder = Glide.with(context).asGif().load(obj).thumbnail(Glide.with(context).asGif().load(options.thumbnailUrl))
             builder = thumbnailBuilder
         }
 
@@ -385,12 +387,13 @@ class GlideImageStrategy : ImageStrategy {
     /**
      * 设置图片加载选项，返回请求对象
      */
-    private fun buildOptions(view: View, context: Context, obj: Any, config: ImageOptions): RequestOptions {
-        val options = RequestOptions()
+    @SuppressLint("CheckResult")
+    private fun buildOptions(view: View, context: Context, obj: Any, options: ImageOptions): RequestOptions {
+        val reqOptions = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
         val strategy = if (ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            when (config.diskCacheStrategy.strategy) {
+            when (options.diskCacheStrategy.strategy) {
                 ImageOptions.DiskCache.NONE.strategy -> DiskCacheStrategy.NONE
                 ImageOptions.DiskCache.AUTOMATIC.strategy -> DiskCacheStrategy.AUTOMATIC
                 ImageOptions.DiskCache.RESOURCE.strategy -> DiskCacheStrategy.RESOURCE
@@ -401,58 +404,59 @@ class GlideImageStrategy : ImageStrategy {
         } else {
             DiskCacheStrategy.RESOURCE
         }
-        options.diskCacheStrategy(strategy)
+        reqOptions.diskCacheStrategy(strategy)
 
 
         // 设置加载优先级
-        val priority = when (config.priority.priority) {
+        val priority = when (options.priority.priority) {
             ImageOptions.LoadPriority.LOW.priority -> Priority.LOW
             ImageOptions.LoadPriority.NORMAL.priority -> Priority.NORMAL
             ImageOptions.LoadPriority.HIGH.priority -> Priority.HIGH
             else -> Priority.NORMAL
         }
-        options.priority(priority)
+        reqOptions.priority(priority)
 
 
         // 内存缓存跳过
-        options.skipMemoryCache(config.skipMemoryCache)
+        reqOptions.skipMemoryCache(options.skipMemoryCache)
 
         // 占位图
         when {
             // 加载中占位图
-            config.placeHolderResId != 0 -> options.placeholder(config.placeHolderResId)
-            // 这里加载错误和链接为null都设置相同的占位图
-            config.errorResId != 0 -> options.error(config.errorResId).fallback(config.errorResId)
+            options.placeHolderResId != 0 -> reqOptions.placeholder(options.placeHolderResId)
             // 统一设置drawable占位图
-            config.placeHolderDrawable != null -> options.placeholder(config.placeHolderDrawable).error(config.placeHolderDrawable)
+            options.placeHolderDrawable != null -> reqOptions.placeholder(options.placeHolderDrawable).error(options.placeHolderDrawable)
+            // 这里加载错误和链接为null都设置相同的占位图
+            options.errorResId != 0 -> reqOptions.error(options.errorResId).fallback(options.errorResId)
+            options.errorDrawable != null -> reqOptions.error(options.errorDrawable).fallback(options.errorDrawable)
         }
 
         // Tag
-        val tag = config.tag
+        val tag = options.tag
         if (tag != null) {
-            options.signature(ObjectKey(tag))
+            reqOptions.signature(ObjectKey(tag))
         } else {
-            options.signature(ObjectKey(obj.toString()))
+            reqOptions.signature(ObjectKey(obj.toString()))
         }
 
         // 设置固定的宽高
-        if (config.size != null) {
-            options.override(config.size!!.width, config.size!!.height)
+        if (options.size != null) {
+            reqOptions.override(options.size!!.width, options.size!!.height)
         }
 
         // 设置transform
         // 是否设置圆行特效
-        if (config.isCircleCrop) {
-            options.transform(CircleCropTransformation(config.circleBorderWidth, config.circleBorderColor))
+        if (options.isCircle) {
+            reqOptions.transform(CircleTransformation(options.circleBorderWidth, options.circleBorderColor))
         }
 
         // 设置高斯模糊特效
-        if (config.isBlur) {
-            options.transform(BlurTransformation(config.blurRadius))
+        if (options.isBlur) {
+            reqOptions.transform(BlurTransformation(options.blurRadius))
         }
 
         // 是否设置圆角特效
-        if (config.isRoundedCorners) {
+        if (options.isRoundedCorners) {
             var transformation: BitmapTransformation? = null
             // 圆角特效受到ImageView的scaleType属性影响
             if (view is ImageView && (view.scaleType == ImageView.ScaleType.FIT_CENTER ||
@@ -462,12 +466,12 @@ class GlideImageStrategy : ImageStrategy {
                 transformation = CenterCrop()
             }
             if (transformation == null) {
-                options.transform(RoundedCornersTransformation(config.roundRadius, config.roundType))
+                reqOptions.transform(RoundedCornersTransformation(options.roundRadius, options.roundType))
             } else {
-                options.transforms(CenterCrop(), RoundedCornersTransformation(config.roundRadius, config.roundType))
+                reqOptions.transforms(transformation, RoundedCornersTransformation(options.roundRadius, options.roundType))
             }
         }
-        return options
+        return reqOptions
     }
 
 }

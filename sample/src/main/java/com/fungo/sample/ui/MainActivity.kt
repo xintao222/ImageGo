@@ -6,10 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
 import com.fungo.imagego.*
-import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnProgressListener
-import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.sample.R
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -24,12 +22,6 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        onLoadRound()
-        rgStrategy.setOnCheckedChangeListener { _, checkedId ->
-            when (checkedId) {
-                R.id.rbGlide -> ImageGoEngine.setImageStrategy(GlideImageStrategy())
-            }
-        }
 
         rgType.setOnCheckedChangeListener { _, checkedId ->
             isGif = checkedId == R.id.rbGif
@@ -39,6 +31,8 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         rbGlide.isChecked = true
 
         initEvent()
+
+        onLoadRound()
     }
 
     private fun initEvent() {

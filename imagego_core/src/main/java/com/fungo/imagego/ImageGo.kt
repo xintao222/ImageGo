@@ -5,13 +5,13 @@ package com.fungo.imagego
 import android.content.Context
 import android.graphics.Bitmap
 import android.view.View
-import com.fungo.imagego.glide.transform.RoundType
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnImageSaveListener
 import com.fungo.imagego.listener.OnProgressListener
 import com.fungo.imagego.strategy.ImageGoEngine
 import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
+import com.fungo.imagego.utils.RoundType
 import java.io.File
 
 
@@ -115,7 +115,7 @@ fun loadCircle(any: Any?, view: View?, borderWidth: Int, borderColor: Int) {
 fun loadCircle(any: Any?, view: View?, borderWidth: Int, borderColor: Int, listener: OnImageListener?) {
     loadImage(any, view, listener, getDefaultBuilder()
             .setCrossFade(false)
-            .setCircleCrop(true)
+            .setCircle(true)
             .setCircleBorderColor(borderColor)
             .setCircleBorderWidth(borderWidth).build())
 }

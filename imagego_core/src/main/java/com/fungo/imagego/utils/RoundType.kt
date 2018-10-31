@@ -1,4 +1,4 @@
-package com.fungo.imagego.glide.transform
+package com.fungo.imagego.utils
 
 /**
  * @author Pinger

@@ -1,7 +1,5 @@
 package com.fungo.imagego.strategy
 
-import com.fungo.imagego.glide.GlideImageStrategy
-
 /**
  * @author Pinger
  * @since 18-7-19 下午3:16
@@ -15,7 +13,7 @@ object ImageGoEngine {
      * 初始化加载策略，在Application中设置
      * 默认使用Glide加载策略
      */
-    private var mStrategy: ImageStrategy = GlideImageStrategy()
+    private var mStrategy: ImageStrategy? = null
 
     /**
      * 是否是开发模式，正式环境设置为false
@@ -29,7 +27,10 @@ object ImageGoEngine {
 
 
     fun getStrategy(): ImageStrategy {
-        return mStrategy
+        if (mStrategy == null) {
+            throw NullPointerException("ImageStrategy can not be null,please call ImageGoEngine.setImageStrategy() first.")
+        }
+        return mStrategy!!
     }
 
     fun setDebug(isDebug: Boolean): ImageGoEngine {

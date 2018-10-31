@@ -1,8 +1,7 @@
 package com.fungo.imagego.strategy
 
 import android.graphics.drawable.Drawable
-import android.support.annotation.ColorInt
-import com.fungo.imagego.glide.transform.RoundType
+import com.fungo.imagego.utils.RoundType
 
 /**
  * @author Pinger
@@ -84,7 +83,7 @@ class ImageOptions private constructor() {
      * 特效处理：圆形图片
      * Glide要将isCrossFade设置为false，不然会影响展示效果
      */
-    var isCircleCrop: Boolean = false
+    var isCircle: Boolean = false
 
     /**
      * 圆形是否带边框
@@ -201,8 +200,8 @@ class ImageOptions private constructor() {
             return this
         }
 
-        fun setCircleCrop(isCircle: Boolean): Builder {
-            config.isCircleCrop = isCircle
+        fun setCircle(isCircle: Boolean): Builder {
+            config.isCircle = isCircle
             return this
         }
 
@@ -213,7 +212,7 @@ class ImageOptions private constructor() {
             return this
         }
 
-        fun setCircleBorderColor(@ColorInt color: Int): Builder {
+        fun setCircleBorderColor(color: Int): Builder {
             if (color != -1) {
                 config.circleBorderColor = color
             }

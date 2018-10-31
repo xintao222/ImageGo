@@ -1,1 +1,1 @@
-include ':sample', ':imagego_core', ':imagego_glide'
+include ':sample', ':imagego_core', ':imagego_glide', ':imagego_picasso'

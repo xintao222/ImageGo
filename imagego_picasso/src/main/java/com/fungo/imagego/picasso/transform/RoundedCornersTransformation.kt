@@ -1,39 +1,46 @@
-package com.fungo.imagego.glide.transform
+package com.fungo.imagego.picasso.transform
 
 import android.graphics.*
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.fungo.imagego.utils.RoundType
-import java.security.MessageDigest
+import com.squareup.picasso.Transformation
 
 
 /**
  * @author Pinger
- * @since 2018/7/17 下午10:22
+ * @since 18-10-31 下午4:32
+ *
  * 图片圆角特效，支持设置多边
  * @param radius
  * @param roundType 圆角类型
  *
- * 参考：[https://github.com/wasabeef/glide-transformations/blob/master/transformations/src/main/java/jp/wasabeef/glide/transformations/RoundedCornersTransformation.java]
  */
-class RoundedCornersTransformation(private val radius: Int,  private val roundType: RoundType = RoundType.ALL) : BitmapTransformation() {
+class RoundedCornersTransformation(private val radius: Int, private val roundType: RoundType = RoundType.ALL) : Transformation {
+
 
     private val diameter: Int = this.radius * 2
-    
-    override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
-        val width = toTransform.width
-        val height = toTransform.height
 
-        val bitmap = pool.get(width, height, Bitmap.Config.ARGB_8888)
-        bitmap.setHasAlpha(true)
+    override fun transform(source: Bitmap?): Bitmap? {
+        if (source == null) return source
 
+        val width = source.width
+        val height = source.height
+
+        // 创建一张可以操作的正方形图片的位图
+        val bitmap: Bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+
+        // 创建一个画布Canvas
         val canvas = Canvas(bitmap)
+
+        // 创建画笔
         val paint = Paint()
+        paint.shader = BitmapShader(source, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
         paint.isAntiAlias = true
-        paint.shader = BitmapShader(toTransform, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)
+
         drawRoundRect(canvas, paint, width.toFloat(), height.toFloat())
+        source.recycle()
         return bitmap
     }
+
 
     private fun drawRoundRect(canvas: Canvas, paint: Paint, width: Float, height: Float) {
         when (roundType) {
@@ -95,8 +102,8 @@ class RoundedCornersTransformation(private val radius: Int,  private val roundTy
         canvas.drawRect(RectF(radius.toFloat(), 0f, right, bottom), paint)
     }
 
-    override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+    override fun key(): String {
+        return "picasso round"
     }
-
 
 }

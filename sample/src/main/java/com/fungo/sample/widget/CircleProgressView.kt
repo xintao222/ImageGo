@@ -239,7 +239,9 @@ class CircleProgressView : ProgressBar {
         canvas.save()
         canvas.translate((mRealWidth / 2).toFloat(), (mRealHeight / 2).toFloat())
         // 绘制外层圆环
-        canvas.drawArc(rectF, 0f, 360f, false, mOutPaint)
+        if (mOutPaint != null) {
+            canvas.drawArc(rectF, 0f, 360f, false, mOutPaint!!)
+        }
         // 绘制内层进度实心圆弧
         // 内层圆弧半径
         val reachArc = progress * 1.0f / max * 360
