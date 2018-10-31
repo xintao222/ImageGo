@@ -28,10 +28,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.dependencies.kotlin
-    implementation rootProject.ext.dependencies.appcompat_v7
 
     api project(":imagego_core")
 
     // Picasso依赖
-    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation rootProject.ext.dependencies.picasso
 }

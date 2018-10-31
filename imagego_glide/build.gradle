@@ -29,7 +29,6 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation rootProject.ext.dependencies.kotlin
-    implementation rootProject.ext.dependencies.appcompat_v7
 
     api project(":imagego_core")
 
