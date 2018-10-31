@@ -1,10 +1,12 @@
-apply plugin: 'com.android.application'
-
+apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
 
-apply plugin: 'kotlin-android-extensions'
+group = 'com.github.PingerOne'
 
 android {
+
     compileSdkVersion rootProject.ext.android.compileSdkVersion
 
     defaultConfig {
@@ -20,17 +22,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation rootProject.ext.dependencies.kotlin
     implementation rootProject.ext.dependencies.appcompat_v7
-    implementation rootProject.ext.dependencies.constraintlayout
-
-    implementation rootProject.ext.dependencies.leakcanary
-    implementation rootProject.ext.dependencies.blockcanary
-
-    implementation project(':imagego_core')
-    implementation project(':imagego_glide')
 }

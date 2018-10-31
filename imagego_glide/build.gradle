@@ -1,6 +1,9 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.github.PingerOne'
 
 android {
 
@@ -27,6 +30,10 @@ dependencies {
 
     implementation rootProject.ext.dependencies.kotlin
     implementation rootProject.ext.dependencies.appcompat_v7
+
+
+    api project(":imagego_core")
+
 
     // Glide依赖
     implementation rootProject.ext.dependencies.glide
