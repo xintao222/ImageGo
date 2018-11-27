@@ -1,8 +1,8 @@
 package com.fungo.sample.app
 
 import android.app.Application
+import com.fungo.imagego.ImageGo
 import com.fungo.imagego.picasso.PicassoImageStrategy
-import com.fungo.imagego.strategy.ImageGoEngine
 
 /**
  * @author Pinger
@@ -18,11 +18,7 @@ class DemoApplication : Application() {
 
 
     private fun initImageStrategy() {
-        ImageGoEngine
-                .setDebug(true)
+        ImageGo.setDebug(true)
                 .setImageStrategy(PicassoImageStrategy())
-
-
     }
-
 }

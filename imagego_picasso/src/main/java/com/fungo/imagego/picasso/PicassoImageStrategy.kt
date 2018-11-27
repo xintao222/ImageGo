@@ -248,7 +248,7 @@ class PicassoImageStrategy : ImageStrategy {
 
         // 高斯模糊
         if (options.isBlur) {
-            request.transform(BlurTransformation(context, options.blurRadius))
+            request.transform(BlurTransformation(context, options.blurRadius,options.blurSampling))
         }
 
         // 圆形图片

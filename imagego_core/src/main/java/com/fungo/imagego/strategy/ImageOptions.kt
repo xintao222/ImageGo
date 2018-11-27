@@ -106,6 +106,11 @@ class ImageOptions private constructor() {
      */
     var blurRadius: Int = 25
 
+    /**
+     * 高斯模糊半經
+     */
+    var blurSampling: Int = 25
+
 
     /**
      * 是否圆角
@@ -132,7 +137,7 @@ class ImageOptions private constructor() {
         private val config = ImageOptions()
 
         fun setPlaceHolderResId(placeHolderResId: Int): Builder {
-            if (placeHolderResId != -1) {
+            if (placeHolderResId != 0) {
                 config.placeHolderResId = placeHolderResId
             }
             return this
@@ -144,7 +149,7 @@ class ImageOptions private constructor() {
         }
 
         fun setErrorResId(errorResId: Int): Builder {
-            if (errorResId != -1) {
+            if (errorResId != 0) {
                 config.errorResId = errorResId
             }
             return this
@@ -206,14 +211,14 @@ class ImageOptions private constructor() {
         }
 
         fun setCircleBorderWidth(width: Int): Builder {
-            if (width != -1) {
+            if (width != 0) {
                 config.circleBorderWidth = width
             }
             return this
         }
 
         fun setCircleBorderColor(color: Int): Builder {
-            if (color != -1) {
+            if (color != 0) {
                 config.circleBorderColor = color
             }
             return this
@@ -225,8 +230,16 @@ class ImageOptions private constructor() {
         }
 
         fun setBlurRadius(blurRadius: Int): Builder {
-            if (blurRadius != -1) {
+            if (blurRadius != 0) {
                 config.blurRadius = blurRadius
+            }
+            return this
+        }
+
+
+        fun setBlurSampling(blurSampling: Int): Builder {
+            if (blurSampling != 0) {
+                config.blurSampling = blurSampling
             }
             return this
         }
@@ -237,7 +250,7 @@ class ImageOptions private constructor() {
         }
 
         fun setRoundRadius(roundRadius: Int): Builder {
-            if (roundRadius != -1) {
+            if (roundRadius != 0) {
                 config.roundRadius = roundRadius
             }
             return this

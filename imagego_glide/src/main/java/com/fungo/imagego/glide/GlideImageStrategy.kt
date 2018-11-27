@@ -452,7 +452,7 @@ class GlideImageStrategy : ImageStrategy {
 
         // 设置高斯模糊特效
         if (options.isBlur) {
-            reqOptions.transform(BlurTransformation(options.blurRadius))
+            reqOptions.transform(BlurTransformation(options.blurRadius,options.blurSampling))
         }
 
         // 是否设置圆角特效

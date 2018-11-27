@@ -5,9 +5,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.widget.Toast
-import com.fungo.imagego.*
 import com.fungo.imagego.listener.OnImageListener
 import com.fungo.imagego.listener.OnProgressListener
+import com.fungo.imagego.strategy.*
 import com.fungo.sample.R
 import kotlinx.android.synthetic.main.activity_main.*
 

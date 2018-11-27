@@ -18,7 +18,7 @@ import com.squareup.picasso.Transformation
  * Picasso高斯模糊特效
  * @param radius 高斯的程度
  */
-class BlurTransformation(context: Context?, private val radius: Int = 25) : Transformation {
+class BlurTransformation(context: Context?, private val radius: Int = 25, private val blurSampling: Int) : Transformation {
 
     private val renderScript: RenderScript = RenderScript.create(context)
 
@@ -38,7 +38,7 @@ class BlurTransformation(context: Context?, private val radius: Int = 25) : Tran
         script.setInput(input)
 
         // 设置模糊半径
-        script.setRadius(radius * 1f)
+        script.setRadius(radius * blurSampling * 1.0f)
 
         //开始操作
         script.forEach(output)

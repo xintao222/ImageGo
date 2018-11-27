@@ -30,7 +30,7 @@ dependencies {
 
     implementation rootProject.ext.dependencies.kotlin
 
-    api project(":imagego_core")
+    api project(':imagego_core')
 
     // Glide依赖
     implementation rootProject.ext.dependencies.glide
