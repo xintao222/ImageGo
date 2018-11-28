@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">ImageGo</string>
+    <string name="image_normal">普通图片</string>
+    <string name="image_gif">GIF图片</string>
+    <string name="image_circle">圆形图片</string>
+    <string name="image_round">圆角图片</string>
+    <string name="image_blur">高斯模糊</string>
+    <string name="image_progress">进度条加载</string>
+    <string name="image_save">保存到本地</string>
 </resources>

@@ -49,6 +49,7 @@ import java.io.File
  */
 class GlideImageStrategy : ImageStrategy {
 
+
     /**
      * 获取默认的配置,可以手动配置
      * 使用默认的加载和加载失败的占位图
@@ -452,7 +453,7 @@ class GlideImageStrategy : ImageStrategy {
 
         // 设置高斯模糊特效
         if (options.isBlur) {
-            reqOptions.transform(BlurTransformation(options.blurRadius,options.blurSampling))
+            reqOptions.transform(BlurTransformation(options.blurRadius, options.blurSampling))
         }
 
         // 是否设置圆角特效

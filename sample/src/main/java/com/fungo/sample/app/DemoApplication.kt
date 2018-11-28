@@ -2,6 +2,7 @@ package com.fungo.sample.app
 
 import android.app.Application
 import com.fungo.imagego.ImageGo
+import com.fungo.imagego.glide.GlideImageStrategy
 import com.fungo.imagego.picasso.PicassoImageStrategy
 
 /**
@@ -19,6 +20,6 @@ class DemoApplication : Application() {
 
     private fun initImageStrategy() {
         ImageGo.setDebug(true)
-                .setImageStrategy(PicassoImageStrategy())
+                .setStrategy(GlideImageStrategy())
     }
 }

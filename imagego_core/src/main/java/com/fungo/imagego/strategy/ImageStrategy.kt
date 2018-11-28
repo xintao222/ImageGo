@@ -19,6 +19,7 @@ import java.io.File
 
 interface ImageStrategy {
 
+
     /**
      * 获取默认的图片配置
      */

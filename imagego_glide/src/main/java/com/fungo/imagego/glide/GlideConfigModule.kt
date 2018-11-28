@@ -13,6 +13,7 @@ import com.bumptech.glide.load.engine.cache.LruResourceCache
 import com.bumptech.glide.load.engine.cache.MemorySizeCalculator
 import com.bumptech.glide.load.model.GlideUrl
 import com.bumptech.glide.module.AppGlideModule
+import com.fungo.imagego.ImageGo
 import com.fungo.imagego.glide.progress.ProgressEngine
 import com.fungo.imagego.utils.ImageUtils
 import java.io.InputStream

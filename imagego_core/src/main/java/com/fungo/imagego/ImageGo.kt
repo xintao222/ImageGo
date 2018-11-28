@@ -28,12 +28,12 @@ object ImageGo {
 
     fun getStrategy(): ImageStrategy {
         if (mStrategy == null) {
-            throw NullPointerException("ImageStrategy can not be null,please call ImageGoEngine.setImageStrategy() first.")
+            throw NullPointerException("ImageStrategy can not be null,please call ImageGoEngine.setStrategy() first.")
         }
         return mStrategy!!
     }
 
-    fun setImageStrategy(strategy: ImageStrategy): ImageGo {
+    fun setStrategy(strategy: ImageStrategy): ImageGo {
         this.mStrategy = strategy
         return this
     }
