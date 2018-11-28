@@ -1,6 +1,6 @@
 
 # ImageGo(Second Picture Loading Framework)
-[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档]()|[EnglishDocument]()
+[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档](https://github.com/PingerOne/ImageGo/blob/master/README_ZH.md)|[EnglishDocument](https://github.com/PingerOne/ImageGo/blob/master/README.md)
 
 Secondary encapsulation image loading framework ImageGo. Written in Kotlin language, using Androidx API, support to replace the underlying loading framework Glide, Picasso and Fresco at any time, support loading special effects images with border round, multi-directional rounded corners, Gaussian blur, support for progress bar loading, GIF loading, saving Images to the local, get the image cache size, clear the image cache and other functions.
 
