@@ -37,9 +37,9 @@ class ImageOptions private constructor() {
     var isCrossFade = true
 
     /**
-     * 是否是GIF图片,是不是Gif图片自动根据后缀来判断，这里改为是否自动加载
+     * 是否根据Gif图片后缀来自动加载
      */
-    var isAutoGif: Boolean = false
+    var isAutoGif: Boolean = true
 
 
     /**

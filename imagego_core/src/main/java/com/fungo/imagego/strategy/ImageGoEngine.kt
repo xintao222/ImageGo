@@ -1,7 +1,6 @@
-@file:JvmName("ImageGo")
+@file:JvmName("ImageGoEngine")
 
 package com.fungo.imagego.strategy
-
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -14,25 +13,17 @@ import com.fungo.imagego.utils.RoundType
 import java.io.File
 
 
-/**
- * @author Pinger
- * @since 18-7-19 下午3:16
- * 图片加载引擎
- */
-
 // －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
 // －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
 // －－－－－－－－－－提供图片加载相关的API－－－－－－－－－
-
 
 //============================================================================
-
 /**
  * 加载网络图片，可以配置加载监听，和其他Options配置项
  * @param any 图片资源
  * @param view 展示的View
  * @param listener 监听加载对象
- * @param placeHolder
+ * @param placeHolder 占位图资源id
  * @param options 图片加载配置项
  */
 
@@ -47,6 +38,16 @@ fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHo
         builder.build()
     }
     getStrategy().loadImage(any, view, listener, generateOptions)
+}
+
+/**
+ * 手动加载GIF图片，使用[loadImage]方法可以自动加载GIF图
+ * @param any 图片资源
+ * @param view 展示的View
+ * @param listener 监听加载对象
+ */
+fun loadGif(any: Any?, view: View?, listener: OnImageListener? = null) {
+    loadImage(any, view, listener = listener, options = getDefaultBuilder().setAutoGif(true).build())
 }
 
 
@@ -150,10 +151,11 @@ fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1
  * 保存网络图片到本地
  * @param context　上下文
  * @param any　保存的图片资源
+ * @param path 图片保存的路径
  * @param listener　图片保存的回调
  */
-fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener? = null) {
-    getStrategy().saveImage(context, any, listener)
+fun saveImage(context: Context?, any: Any?, path: String? = null, listener: OnImageSaveListener? = null) {
+    getStrategy().saveImage(context, any, path, listener)
 }
 
 //============================================================================
@@ -224,9 +226,10 @@ fun downloadImage(context: Context, any: Any?): File {
  * 获取默认的配置,可以手动配置
  */
 private fun getDefaultBuilder(): ImageOptions.Builder {
-    return getStrategy().getDefaultBuilder()
+    return if (ImageGo.getDefaultBuilder() != null) {
+        ImageGo.getDefaultBuilder()!!
+    } else getStrategy().getDefaultBuilder()
 }
-
 
 /**
  * 获取图片加载策略
