@@ -45,9 +45,23 @@
 
 2. 在application的build.gradle文件中引入仓库依赖
 
-        dependencies {
-            implementation 'com.github.PingerOne:ImageGo:2.0.5'
-        }
+    * 如果需要自己定义加载策略，则添加依赖：
+
+            dependencies {
+                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.5''
+            }
+
+    * 如果使用Glide加载图片，则添加依赖：
+
+            dependencies {
+                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.5''
+            }
+
+    * 如果使用Picasso加载图片，则添加依赖：
+
+            dependencies {
+                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.5''
+            }
 
 3. 在Application中设置图片加载策略，默认使用Glide加载
 
