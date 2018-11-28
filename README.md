@@ -46,15 +46,14 @@
 2. 在application的build.gradle文件中引入仓库依赖
 
         dependencies {
-            implementation 'com.github.PingerOne:ImageGo:2.0.1'
+            implementation 'com.github.PingerOne:ImageGo:2.0.5'
         }
 
 3. 在Application中设置图片加载策略，默认使用Glide加载
 
-        ImageGoEngine
+        ImageGo
                  .setDebug(true)   // 开发模式
-                 .setAutoGif(true) // 是否自动加载GIF，开启后loadImage方法会自动加载GIF图片
-                 .setImageStrategy(GlideImageStrategy())  // 图片加载策略
+                 .setStrategy(GlideImageStrategy())  // 图片加载策略
 
 
 ## 代码示例
