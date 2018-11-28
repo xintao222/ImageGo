@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
@@ -24,9 +22,10 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation rootProject.ext.dependencies.kotlin
-    implementation rootProject.ext.dependencies.appcompat_v7
-    implementation rootProject.ext.dependencies.constraintlayout
     implementation project(':imagego_glide')
     implementation project(':imagego_picasso')
+
+    implementation rootProject.ext.dependencies.kotlin
+    implementation rootProject.ext.dependencies.appcompat
+    implementation rootProject.ext.dependencies.constraintlayout
 }

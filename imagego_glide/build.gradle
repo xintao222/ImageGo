@@ -17,7 +17,7 @@ android {
     }
 
     buildTypes {
-        release {
+        debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -28,9 +28,9 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.dependencies.kotlin
-
     api project(':imagego_core')
+
+    implementation rootProject.ext.dependencies.kotlin
 
     // Glide依赖
     implementation rootProject.ext.dependencies.glide

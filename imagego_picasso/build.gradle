@@ -27,9 +27,8 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.dependencies.kotlin
-
     api project(':imagego_core')
+    implementation rootProject.ext.dependencies.kotlin
 
     // Picasso依赖
     implementation rootProject.ext.dependencies.picasso
