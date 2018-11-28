@@ -125,13 +125,9 @@ class PicassoImageStrategy : ImageStrategy {
 
     }
 
-    override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
+    override fun saveImage(context: Context?, any: Any?, path: String?, listener: OnImageSaveListener?) {
         if (context == null || any == null) {
-            if (listener == null) {
-                ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
-            } else {
-                listener.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
-            }
+            listener?.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             return
         }
@@ -144,8 +140,12 @@ class PicassoImageStrategy : ImageStrategy {
                     System.currentTimeMillis().toString() + ImageConstant.IMAGE_JPG
                 }
 
+                val filePath = if (TextUtils.isEmpty(path)) {
+                    ImageUtils.getImageSavePath(context)
+                } else path + File.separator
+
                 // 保存的位置
-                val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
+                val destFile = File(filePath + suffix)
                 // 要保存的原图
                 val imageFile = downloadImage(context, any)
                 // 进行保存
@@ -158,7 +158,7 @@ class PicassoImageStrategy : ImageStrategy {
                 ImageUtils.runOnUIThread(Runnable {
                     if (isCopySuccess) {
                         if (listener == null) {
-                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context), Toast.LENGTH_LONG)
+                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
                         } else {
                             listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
                         }
@@ -172,11 +172,7 @@ class PicassoImageStrategy : ImageStrategy {
                 })
             } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
-                    if (listener == null) {
-                        ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
-                    } else {
-                        listener.onSaveFail(ImageConstant.SAVE_FAIL)
-                    }
+                    listener?.onSaveFail(ImageConstant.SAVE_FAIL)
                     ImageUtils.logE(ImageConstant.SAVE_FAIL + ": " + e.message)
                 })
             }
@@ -248,7 +244,7 @@ class PicassoImageStrategy : ImageStrategy {
 
         // 高斯模糊
         if (options.isBlur) {
-            request.transform(BlurTransformation(context, options.blurRadius,options.blurSampling))
+            request.transform(BlurTransformation(context, options.blurRadius, options.blurSampling))
         }
 
         // 圆形图片

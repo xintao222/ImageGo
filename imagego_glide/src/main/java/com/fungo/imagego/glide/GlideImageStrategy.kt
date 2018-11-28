@@ -11,6 +11,7 @@ import android.net.Uri
 import android.text.TextUtils
 import android.view.View
 import android.widget.ImageView
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.bumptech.glide.Priority
 import com.bumptech.glide.RequestBuilder
@@ -168,7 +169,11 @@ class GlideImageStrategy : ImageStrategy {
                 // 主线程回调
                 ImageUtils.runOnUIThread(Runnable {
                     if (isCopySuccess) {
-                        listener?.onSaveSuccess(ImageConstant.SAVE_PATH + filePath)
+                        if (listener == null) {
+                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
+                        } else {
+                            listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
+                        }
                     } else {
                         listener?.onSaveFail(ImageConstant.SAVE_FAIL)
                     }
