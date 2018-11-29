@@ -61,7 +61,7 @@ interface ImageStrategy {
      * @param any　保存的图片资源
      * @param listener　图片保存的回调
      */
-    fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?)
+    fun saveImage(context: Context?, any: Any?, path: String?, listener: OnImageSaveListener?)
 
     /**
      * 清除图片的磁盘缓存

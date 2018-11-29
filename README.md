@@ -1,141 +1,159 @@
 
-# ImageGo(二次图片加载框架)
-[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo)
+# ImageGo(Second Picture Loading Framework)
+[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档](https://github.com/PingerOne/ImageGo/blob/master/README_ZH.md)|[EnglishDocument](https://github.com/PingerOne/ImageGo/blob/master/README.md)
 
+Secondary encapsulation image loading framework ImageGo. Written in Kotlin language, using Androidx API, support to replace the underlying loading framework Glide, Picasso and Fresco at any time, support loading special effects images with border round, multi-directional rounded corners, Gaussian blur, support for progress bar loading, GIF loading, saving Images to the local, get the image cache size, clear the image cache and other functions.
 
-> 使用Kotlin二次封装图片加载框架ImageGo。提供多种API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，全局GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
->
-> 这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。这个库使用的是kotlin代码编写的，代码量不大。
+This library is derived from the company's business. The project has been used all the time, and the problems encountered have been basically fixed. Most of the image loading modes should be satisfactory. If you have any problems with your use, please feel free to submit Issues.
 
+## Add dependency
 
-##  诞生缘由
-在项目开发中，大部分开发者都会选择使用Glide，Picasso或者Fresco图片加载框架来加载图片。博主也不例外，选择的是Glide，虽然在使用的过程中遇到一些问题，但是总的来说Glide还是很Skr的。
-
-随着业务发展，产品提出了加载webp动图的需求，很遗憾的是，Glide并不支持加载webp动图，但是Fresco却可以。没办法，那就只能将Glide替换成Fresco，令人崩溃的是，Fresco使用的并不是系统的ImageView，而是自定义的SimpleDraweeView，而且API也不一样。替换起来工作量浩大，令人头疼。
-
-之前使用Glide是有考虑到以后换图片加载框架的可能，所以也使用了ImageManager来对Glide的加载进行管理，但是ImageManager内的加载实现是写死Glide加载的，并没有抽取接口，没办法只能重新二次封装一个图片加载框架，来支持Glide,Picasso和Fresco框架随时替换。
-
-## 实现原理
-
-#### 切换底层加载框架
-为了实现项目替换图片加载框架的需求，这里将常用的方法抽取到顶层接口ImageStrategy中，通过策略设计模式，设置具体的实现类，最终由实现类去完成加载图片。一般在项目的Application中去设置图片的加载策略就可以使用了，如果没有设置，默认使用的是Glide加载策略。
-
-
-#### 图片加载属性配置
-为了能和Glide等图片加载框架一样，非常简单的配置图片加载相关的属性，这里提供了ImageOptions这个类来进行配置，一些常用的比如占位图，是否Gif图，内存缓存策略，磁盘缓存策略等使用默认配置就好了。为了能更加方便的直接使用，这里也将平时用得多的抽取成了API的方式，如果需要更多的功能可以手动去配置ImageOptionsle。
-
-
-#### 实现圆形圆角高斯模糊特效图片
-调用loadCircle、loadBlur、loadRound等方法可以加载各种特效图片，这些API其实是主动设置ImageOptions中的isCircle、isRound、isBlur等属性为true，当在策略的具体实现类中时，会对这个属性一一进行判断，如果匹配到了，就会调用相关的API实现这些特效。这里提供的特效参考自[glide-transformations](https://github.com/wasabeef/glide-transformations)。
-
-
-
-
-## 使用方法
-
-1. 在项目根目录的build.gradle文件中添加jitpack仓库
+1. Add the jitpack repository path to the build.gradle file in the project root directory.
 
         allprojects {
             repositories {
-                google()
-                jcenter()
                 maven { url 'https://jitpack.io' }
             }
         }
 
-2. 在application的build.gradle文件中引入仓库依赖
+2. Add the repository dependencies in the app's build.gradle file.
 
-    * 如果需要自己定义加载策略，则添加依赖：
+    * if you need to define your own loading strategy, add the following dependencies, then implement the ImageStrategy interface and override the method of loading the image：
 
-            dependencies {
-                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.5''
-            }
+          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.5'
 
-    * 如果使用Glide加载图片，则添加依赖：
+    * if you use Glide to load the image：
 
-            dependencies {
-                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.5''
-            }
+          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.5'
 
-    * 如果使用Picasso加载图片，则添加依赖：
+    * if you use Picasso to load the image：
 
-            dependencies {
-                implementation 'implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.5''
-            }
+          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.5'
 
-3. 在Application中设置图片加载策略，默认使用Glide加载
+
+## How To Use
+1. After adding dependencies, set the image loading policy in the Application. GlideImageStrategy can also be a self-defined loading strategy.
 
         ImageGo
-                 .setDebug(true)   // 开发模式
-                 .setStrategy(GlideImageStrategy())  // 图片加载策略
+          .setDebug(true)   // debug
+          .setStrategy(GlideImageStrategy())  // Image loading strategy
+          .setDefaultBuilder(ImageOptions.Builder())  // Image loading configuration properties, using default properties
+
+2. Load directly using the API that loads the image.
+
+        loadImage(imageUrl imageView,listener = null,options = null)
 
 
-## 代码示例
-* 加载全局图片
+## Official API
 
-        loadImage(Any, View)
-        loadImage(Any, View, OnImageListener)
+#### Load normal picture
 
-* 加载GIF图片
-
-        loadGif(Any, View)
-        loadGif(Any, View, OnImageListener)
-
-* 加载Bitmap图片
-
-        loadBitmap(Context,Any,OnImageListener)
-
-* 加载进度条图片
-
-        loadProgress(String,View,OnProgressListener)
-
-* 加载圆形图片
-
-        loadCircle(String, View)
-        loadCircle(String, View, borderWidth, borderColor)
-
-* 加载圆角图片
-
-        loadRound(String, View)
-        loadRound(String, View, roundRadius)
-        loadRound(String, View, roundRadius, roundType)
-
-* 加载高斯模糊图片
-
-        loadBlur(String, View)
-        loadBlur(String, View, blurRadius)
-
-* 保存图片
-
-        saveImage(Context, Any)
-        saveImage(Context, Any, OnImageSaveListener)
+    /**
+    * Load web images, support gradient animation and GIF loading, configure load monitoring, and other Options configuration items.
+    *
+    * @param any Image resource
+    * @param view Displayed View
+    * @param listener Listening load object
+    * @param placeHolder Placeholder resource id
+    * @param options Image loading configuration options
+    */
+    fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHolder: Int = 0, options: ImageOptions? = null)
 
 
-
-## 常用API
-| Name | Description |
-| :- | :- |
-| loadImage | 加载全局图片 |
-| loadGif   | 加载GIF图片 |
-| loadProgress |加载进度条图片|
-| loadBitmap   |加载生成Bitmap图片|
-| loadCircle   |加载圆形图片|
-| loadRound    |加载圆角图片|
-| loadBlur |加载高斯模糊图片|
-| saveImage |保存图片到本地|
-| clearImageDiskCache |清理磁盘中的图片缓存|
-| clearImageMemoryCache |清理内存中的图片缓存|
-| getCacheSize |获取图片缓存的大小|
-| resumeRequests |开始所有的图片请求|
-| pauseRequests |暂停所有的图片请求|
-| downloadImage |缓存图片到本地|
+#### Manually load GIF images
 
 
+    /**
+     * Manually load GIF images, use the [loadImage] method to automatically load GIF images.
+     *
+     * @param any Image resource
+     * @param view Displayed View
+     * @param listener Listening load object
+     */
+    fun loadGif(any: Any?, view: View?, listener: OnImageListener? = null)
 
-## 参考
+
+#### Load Bitmap image
 
 
----
-> 欢迎大家访问我的[简书](http://www.jianshu.com/u/64f479a1cef7)，[博客](http://pingerone.com/)和[GitHub](https://github.com/PingerOne)。
+    /**
+     * Load the image resource asynchronously and output the Bitmap object in the callback. Can be called directly in the main thread.
+     *
+     * @param context
+     * @param any Image resource
+     * @param listener Listening load object
+     */
+    fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener)
+
+    ---------------------------------------------------------------------------
+
+    /**
+     * Synchronize the image resource to generate a Bitmap object. Must be called in a child thread and handle exceptions.
+     *
+     * @param context
+     * @param any Image resource
+     * @return Bitmap object，maybe null
+     */
+    fun loadBitmap(context: Context?, any: Any?): Bitmap?
 
 
+#### Load a circular image
+
+    /**
+     * Load circular image, support setting border size and border color, no border by default.
+     * @param any Image resource
+     * @param view　Displayed View
+     * @param borderWidth　Border size
+     * @param borderColor　Border color
+     * @param listener Listening load object
+     */
+    fun loadCircle(any: Any?, view: View?, borderWidth: Int = 0, borderColor: Int = 0, listener: OnImageListener? = null)
+
+
+#### Load rounded corners image
+
+    /**
+     * Load the fillet image, the default fillet is 4dp, and the four corners are rounded. RoundType can be used to control the position of the fillet.
+     * @param any Image resource
+     * @param view Displayed View
+     * @param roundRadius　Angle of fillet
+     * @param roundType　Corner position of the rounded picture
+     * @param listener Listening load object
+     */
+    fun loadRound(any: Any?, view: View?, roundRadius: Int = 12, roundType: RoundType = RoundType.ALL, listener: OnImageListener? = null)
+
+
+#### Load Gaussian Blur Image
+
+    /**
+     * Load Gaussian blur pictures, default 25 blur points, 1 blur radius.
+     * @param any Image resource
+     * @param view　Displayed View
+     * @param blurRadius　Gaussian fuzzy degree
+     * @param blurSampling　Gaussian blur radius
+     * @param listener Listening load object
+     */
+    fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1, listener: OnImageListener? = null)
+
+
+#### Save image to local
+
+    /**
+    * Save network image to local.
+    * @param context　
+    * @param any Image resource
+    * @param path Path to save the image
+    * @param listener Listening save object
+    */
+    fun saveImage(context: Context?, any: Any?, path: String? = null, listener: OnImageSaveListener? = null)
+
+
+
+
+## Author
+Name：Pinger
+
+Email：fungoit@gmail.com
+
+## License
+Apache 2.0,See the [LICENSE](https://github.com/PingerOne/ImageGo/blob/master/LICENSE) file for details.

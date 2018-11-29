@@ -138,13 +138,8 @@ class GlideImageStrategy : ImageStrategy {
      * 保存图片到本地
      * 可以在主线程调用
      */
-    override fun saveImage(context: Context?, any: Any?, listener: OnImageSaveListener?) {
+    override fun saveImage(context: Context?, any: Any?, path: String?, listener: OnImageSaveListener?) {
         if (context == null || any == null) {
-            if (listener == null) {
-                ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
-            } else {
-                listener.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
-            }
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             return
         }
@@ -157,8 +152,12 @@ class GlideImageStrategy : ImageStrategy {
                     System.currentTimeMillis().toString() + ImageConstant.IMAGE_JPG
                 }
 
+                val filePath = if (TextUtils.isEmpty(path)) {
+                    ImageUtils.getImageSavePath(context)
+                } else path + File.separator
+
                 // 保存的位置
-                val destFile = File(ImageUtils.getImageSavePath(context) + suffix)
+                val destFile = File(filePath + suffix)
                 // 要保存的原图
                 val imageFile = downloadImage(context, any)
                 // 进行保存
@@ -171,25 +170,17 @@ class GlideImageStrategy : ImageStrategy {
                 ImageUtils.runOnUIThread(Runnable {
                     if (isCopySuccess) {
                         if (listener == null) {
-                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context), Toast.LENGTH_LONG)
+                            ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
                         } else {
                             listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
                         }
                     } else {
-                        if (listener == null) {
-                            ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
-                        } else {
-                            listener.onSaveFail(ImageConstant.SAVE_FAIL)
-                        }
+                        listener?.onSaveFail(ImageConstant.SAVE_FAIL)
                     }
                 })
             } catch (e: Exception) {
                 ImageUtils.runOnUIThread(Runnable {
-                    if (listener == null) {
-                        ImageUtils.showToast(context, ImageConstant.SAVE_FAIL)
-                    } else {
-                        listener.onSaveFail(ImageConstant.SAVE_FAIL)
-                    }
+                    listener?.onSaveFail(ImageConstant.SAVE_FAIL)
                     ImageUtils.logE(ImageConstant.SAVE_FAIL + ": " + e.message)
                 })
             }

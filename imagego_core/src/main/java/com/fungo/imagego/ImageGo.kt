@@ -1,5 +1,6 @@
 package com.fungo.imagego
 
+import com.fungo.imagego.strategy.ImageOptions
 import com.fungo.imagego.strategy.ImageStrategy
 
 
@@ -10,6 +11,11 @@ object ImageGo {
      * 默认使用Glide加载策略
      */
     private var mStrategy: ImageStrategy? = null
+
+    /**
+     * 图片加载属性构造器
+     */
+    private var mBuilder: ImageOptions.Builder? = null
 
     /**
      * 是否是开发模式，正式环境设置为false
@@ -25,7 +31,6 @@ object ImageGo {
         return isDebug
     }
 
-
     fun getStrategy(): ImageStrategy {
         if (mStrategy == null) {
             throw NullPointerException("ImageStrategy can not be null,please call ImageGoEngine.setStrategy() first.")
@@ -38,6 +43,14 @@ object ImageGo {
         return this
     }
 
+    fun setDefaultBuilder(builder: ImageOptions.Builder): ImageGo {
+        this.mBuilder = builder
+        return this
+    }
+
+    fun getDefaultBuilder(): ImageOptions.Builder? {
+        return this.mBuilder
+    }
 }
 
 
