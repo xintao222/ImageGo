@@ -20,15 +20,15 @@
 
     * 如果需要自己定义加载策略，则添加以下依赖，然后实现ImageStrategy接口，重写加载图片的方法：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.6'
 
     * 如果使用Glide加载图片，则添加依赖：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.6'
 
     * 如果使用Picasso加载图片，则添加依赖：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.6'
 
 
 ## 使用方法

@@ -20,15 +20,15 @@ This library is derived from the company's business. The project has been used a
 
     * if you need to define your own loading strategy, add the following dependencies, then implement the ImageStrategy interface and override the method of loading the image：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.6'
 
     * if you use Glide to load the image：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.6'
 
     * if you use Picasso to load the image：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.5'
+          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.6'
 
 
 ## How To Use
