@@ -1,14 +1,14 @@
+# ImageGo(二次图片加载框架)
+[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档](https://github.com/PingerOne/ImageGo/blob/master/README.md)|[EnglishDocument](https://github.com/PingerOne/ImageGo/blob/master/README_EN.md)
 
-# ImageGo(Second Picture Loading Framework)
-[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档](https://github.com/PingerOne/ImageGo/blob/master/README_ZH.md)|[EnglishDocument](https://github.com/PingerOne/ImageGo/blob/master/README.md)
+> 二次封装图片加载框架ImageGo。使用Kotlin语言编写，使用Androidx的API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
+>
+> 这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。如果大家使用遇到什么问题，欢迎提交Issues。
 
-Secondary encapsulation image loading framework ImageGo. Written in Kotlin language, using Androidx API, support to replace the underlying loading framework Glide, Picasso and Fresco at any time, support loading special effects images with border round, multi-directional rounded corners, Gaussian blur, support for progress bar loading, GIF loading, saving Images to the local, get the image cache size, clear the image cache and other functions.
 
-This library is derived from the company's business. The project has been used all the time, and the problems encountered have been basically fixed. Most of the image loading modes should be satisfactory. If you have any problems with your use, please feel free to submit Issues.
+## 添加依赖
 
-## Add dependency
-
-1. Add the jitpack repository path to the build.gradle file in the project root directory.
+1. 在项目根目录的build.gradle文件中添加jitpack仓库路径。
 
         allprojects {
             repositories {
@@ -16,134 +16,134 @@ This library is derived from the company's business. The project has been used a
             }
         }
 
-2. Add the repository dependencies in the app's build.gradle file.
+2. 在app的build.gradle文件中引入仓库依赖。
 
-    * if you need to define your own loading strategy, add the following dependencies, then implement the ImageStrategy interface and override the method of loading the image：
+    * 如果需要自己定义加载策略，则添加以下依赖，然后实现ImageStrategy接口，重写加载图片的方法：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_core:2.0.6'
+          implementation 'com.github.PingerOne.ImageGo:imagego_core:x.x.x'
 
-    * if you use Glide to load the image：
+    * 如果使用Glide加载图片，则添加依赖：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_glide:2.0.6'
+          implementation 'com.github.PingerOne.ImageGo:imagego_glide:x.x.x'
 
-    * if you use Picasso to load the image：
+    * 如果使用Picasso加载图片，则添加依赖：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:2.0.6'
+          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:x.x.x'
 
 
-## How To Use
-1. After adding dependencies, set the image loading policy in the Application. GlideImageStrategy can also be a self-defined loading strategy.
+## 使用方法
+1. 添加依赖后，在Application中设置图片加载策略。其中GlideImageStrategy也可以是自己定义的加载策略。
 
         ImageGo
-          .setDebug(true)   // debug
-          .setStrategy(GlideImageStrategy())  // Image loading strategy
-          .setDefaultBuilder(ImageOptions.Builder())  // Image loading configuration properties, using default properties
+          .setDebug(true)   // 开发模式
+          .setStrategy(GlideImageStrategy())  // 图片加载策略
+          .setDefaultBuilder(ImageOptions.Builder())  // 图片加载配置属性，可使用默认属性
 
-2. Load directly using the API that loads the image.
+2. 直接使用加载图片的API加载。
 
         loadImage(imageUrl imageView,listener = null,options = null)
 
 
-## Official API
+## 官方API
 
-#### Load normal picture
+#### 加载普通图片
 
     /**
-    * Load web images, support gradient animation and GIF loading, configure load monitoring, and other Options configuration items.
+    * 加载网络图片，支持渐变动画和GIF加载，可以配置加载监听，和其他Options配置项
     *
-    * @param any Image resource
-    * @param view Displayed View
-    * @param listener Listening load object
-    * @param placeHolder Placeholder resource id
-    * @param options Image loading configuration options
+    * @param any 图片资源
+    * @param view 展示的View
+    * @param listener 监听加载对象
+    * @param placeHolder 占位图资源id
+    * @param options 图片加载配置项
     */
     fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHolder: Int = 0, options: ImageOptions? = null)
 
 
-#### Manually load GIF images
+#### 手动加载GIF图片
 
 
     /**
-     * Manually load GIF images, use the [loadImage] method to automatically load GIF images.
-     *
-     * @param any Image resource
-     * @param view Displayed View
-     * @param listener Listening load object
+     * 手动加载GIF图片，使用[loadImage]方法可以自动加载GIF图
+
+     * @param any 图片资源
+     * @param view 展示的View
+     * @param listener 监听加载对象
      */
     fun loadGif(any: Any?, view: View?, listener: OnImageListener? = null)
 
 
-#### Load Bitmap image
+#### 加载Bitmap图片
 
 
     /**
-     * Load the image resource asynchronously and output the Bitmap object in the callback. Can be called directly in the main thread.
+     * 异步加载图片资源，在回调中输出Bitmap对象。可以在主线程直接调用
      *
-     * @param context
-     * @param any Image resource
-     * @param listener Listening load object
+     * @param context 上下文
+     * @param any 图片资源
+     * @param listener　加载图片的回调
      */
     fun loadBitmap(context: Context?, any: Any?, listener: OnImageListener)
 
     ---------------------------------------------------------------------------
 
     /**
-     * Synchronize the image resource to generate a Bitmap object. Must be called in a child thread and handle exceptions.
+     * 同步加载图片资源，生成Bitmap对象。必须在子线程调用，并且处理异常。
      *
-     * @param context
-     * @param any Image resource
-     * @return Bitmap object，maybe null
+     * @param context 上下文
+     * @param any 图片资源
+     * @return Bitmap对象，可能为null
      */
     fun loadBitmap(context: Context?, any: Any?): Bitmap?
 
 
-#### Load a circular image
+#### 加载圆形图片
 
     /**
-     * Load circular image, support setting border size and border color, no border by default.
-     * @param any Image resource
-     * @param view　Displayed View
-     * @param borderWidth　Border size
-     * @param borderColor　Border color
-     * @param listener Listening load object
+     * 加载圆形图片,支持设置边框大小和边框颜色，默认没有边框
+     * @param any 图片资源
+     * @param view　展示视图
+     * @param borderWidth　边框的大小
+     * @param borderColor　边框的颜色
+     * @param listener　加载回调
      */
     fun loadCircle(any: Any?, view: View?, borderWidth: Int = 0, borderColor: Int = 0, listener: OnImageListener? = null)
 
 
-#### Load rounded corners image
+#### 加载圆角图片
 
     /**
-     * Load the fillet image, the default fillet is 4dp, and the four corners are rounded. RoundType can be used to control the position of the fillet.
-     * @param any Image resource
-     * @param view Displayed View
-     * @param roundRadius　Angle of fillet
-     * @param roundType　Corner position of the rounded picture
-     * @param listener Listening load object
+     * 加载圆角图片，默认圆角为4dp，四个角都是圆角。可以使用RoundType来控制圆角的位置。
+     * @param any 图片链接
+     * @param view 展示
+     * @param roundRadius　圆角的角度
+     * @param roundType　圆角图片的角位置
+     * @param listener 加载回调
      */
     fun loadRound(any: Any?, view: View?, roundRadius: Int = 12, roundType: RoundType = RoundType.ALL, listener: OnImageListener? = null)
 
 
-#### Load Gaussian Blur Image
+#### 加载高斯模糊图片
 
     /**
-     * Load Gaussian blur pictures, default 25 blur points, 1 blur radius.
-     * @param any Image resource
-     * @param view　Displayed View
-     * @param blurRadius　Gaussian fuzzy degree
-     * @param blurSampling　Gaussian blur radius
-     * @param listener Listening load object
+     * 加载高斯模糊图片,默认25个模糊点，1个模糊半径。
+     * @param any　图片链接
+     * @param view　展示
+     * @param blurRadius　高斯模糊的度数
+     * @param blurSampling　高斯模糊的半径
+     * @param listener 回调
      */
     fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1, listener: OnImageListener? = null)
 
 
-#### Save image to local
+#### 保存图片到本地
 
     /**
-    * Save network image to local.
-    * @param context　
-    * @param any Image resource
-    * @param path Path to save the image
-    * @param listener Listening save object
+    * 保存网络图片到本地
+    * @param context　上下文
+    * @param any　保存的图片资源
+    * @param path 图片保存的路径
+    * @param listener　图片保存的回调
     */
     fun saveImage(context: Context?, any: Any?, path: String? = null, listener: OnImageSaveListener? = null)
 
@@ -156,4 +156,5 @@ Name：Pinger
 Email：fungoit@gmail.com
 
 ## License
-Apache 2.0,See the [LICENSE](https://github.com/PingerOne/ImageGo/blob/master/LICENSE) file for details.
+Apache 2.0，更多细节请查看[LICENSE](https://github.com/PingerOne/ImageGo/blob/master/LICENSE)。
+

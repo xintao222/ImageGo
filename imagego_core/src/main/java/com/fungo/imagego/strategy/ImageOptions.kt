@@ -12,7 +12,7 @@ import com.fungo.imagego.utils.RoundType
 class ImageOptions private constructor() {
 
     /**
-     * 加载占位图资源ID
+     * 加载占位图资源ID，如果placeholder是0表示没有占位图
      */
     var placeHolderResId = 0
 
@@ -137,14 +137,21 @@ class ImageOptions private constructor() {
         private val config = ImageOptions()
 
         fun setPlaceHolderResId(placeHolderResId: Int): Builder {
-            if (placeHolderResId != 0) {
+            // 移除默认的配置
+            if (placeHolderResId == 0) {
+                config.placeHolderDrawable = null
                 config.placeHolderResId = placeHolderResId
+            } else if (placeHolderResId == -1) {
+                config.placeHolderResId = 0
             }
             return this
         }
 
-        fun setPlaceHolderDrawable(placeHolderDrawable: Drawable): Builder {
+        fun setPlaceHolderDrawable(placeHolderDrawable: Drawable?): Builder {
             config.placeHolderDrawable = placeHolderDrawable
+            if (placeHolderDrawable != null) {
+                config.placeHolderResId = 0
+            }
             return this
         }
 

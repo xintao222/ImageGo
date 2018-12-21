@@ -16,6 +16,6 @@ class ImageGifActivity(override val layoutRes: Int = R.layout.activity_btn_gif) 
     override fun isHomeAsUpEnabled(): Boolean = true
 
     override fun initView() {
-        loadImage(DataProvider.getGifUrl(), imageView)
+        loadImage(DataProvider.getGifUrl(), imageView, placeHolder = 0)
     }
 }
