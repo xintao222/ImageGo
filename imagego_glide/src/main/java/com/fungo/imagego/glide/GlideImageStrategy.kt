@@ -179,7 +179,7 @@ class GlideImageStrategy : ImageStrategy {
                         if (listener == null) {
                             ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
                         } else {
-                            listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context))
+                            listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context),suffix)
                         }
                     } else {
                         listener?.onSaveFail(ImageConstant.SAVE_FAIL)

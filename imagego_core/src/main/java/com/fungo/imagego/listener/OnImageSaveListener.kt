@@ -16,7 +16,7 @@ interface OnImageSaveListener {
      * 图片保存成功
      * @param path 图片保存的路径
      */
-    fun onSaveSuccess(path: String?)
+    fun onSaveSuccess(path: String?,fileName:String)
 
     /**
      * 图片保存失败
