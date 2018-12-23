@@ -167,7 +167,7 @@ class PicassoImageStrategy : ImageStrategy {
                         if (listener == null) {
                             ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
                         } else {
-                            listener.onSaveSuccess(ImageConstant.SAVE_PATH + ImageUtils.getImageSavePath(context),suffix)
+                            listener.onSaveSuccess(ImageUtils.getImageSavePath(context),suffix)
                         }
                     } else {
                         if (listener == null) {
