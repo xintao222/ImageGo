@@ -148,7 +148,7 @@ fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1
 //============================================================================
 
 /**
- * 保存网络图片到本地
+ * 保存网络图片到本地，保存图片一定要自己检查是否有保存文件的权限
  * @param context　上下文
  * @param any　保存的图片资源
  * @param path 图片保存的路径

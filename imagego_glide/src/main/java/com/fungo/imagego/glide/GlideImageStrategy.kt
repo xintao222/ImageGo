@@ -139,8 +139,15 @@ class GlideImageStrategy : ImageStrategy {
      * 可以在主线程调用
      */
     override fun saveImage(context: Context?, any: Any?, path: String?, listener: OnImageSaveListener?) {
+        listener?.onSaveStart()
         if (context == null || any == null) {
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            listener?.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            return
+        }
+
+        if(!ImageUtils.checkPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            listener?.onSaveFail(ImageConstant.SAVE_NOT_PERMISSION)
             return
         }
         ImageUtils.runOnSubThread(Runnable {

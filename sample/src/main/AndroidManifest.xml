@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.INTERNET" />
 
-
     <!--添加读写权限，拥有写入权限时会默认使用AUTOMATIC缓存策略，如果没有写入权限，则默认使用RESOURCE缓存-->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />

@@ -1,5 +1,6 @@
 package com.fungo.imagego.picasso
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -126,9 +127,15 @@ class PicassoImageStrategy : ImageStrategy {
     }
 
     override fun saveImage(context: Context?, any: Any?, path: String?, listener: OnImageSaveListener?) {
+        listener?.onSaveStart()
         if (context == null || any == null) {
             listener?.onSaveFail(ImageConstant.SAVE_NULL_CONTEXT_ANY)
             ImageUtils.logD(ImageConstant.SAVE_NULL_CONTEXT_ANY)
+            return
+        }
+
+        if(!ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            listener?.onSaveFail(ImageConstant.SAVE_NOT_PERMISSION)
             return
         }
         ImageUtils.runOnSubThread(Runnable {

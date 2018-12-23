@@ -21,6 +21,7 @@ object ImageConstant {
     const val LOAD_ERROR = "图片加载失败"
 
     const val SAVE_NULL_CONTEXT_ANY = "图片保存失败：context为null或者any为null"
+    const val SAVE_NOT_PERMISSION = "图片保存失败：没有储存权限"
     const val SAVE_FAIL = "图片保存失败"
     const val SAVE_PATH= "图片已保存至 "
 

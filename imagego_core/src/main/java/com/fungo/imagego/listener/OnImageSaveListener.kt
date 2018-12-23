@@ -8,6 +8,11 @@ package com.fungo.imagego.listener
 interface OnImageSaveListener {
 
     /**
+     * 保存图片开始
+     */
+    fun onSaveStart()
+
+    /**
      * 图片保存成功
      * @param path 图片保存的路径
      */
