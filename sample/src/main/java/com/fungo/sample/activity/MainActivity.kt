@@ -38,12 +38,14 @@ class MainActivity(override val layoutRes: Int = R.layout.activity_main) : BaseA
             btnSave -> {
                 if (checkPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                     saveImage(this,DataProvider.getImageUrl(),listener = object :OnImageSaveListener{
+                        override fun onSaveSuccess(path: String?, fileName: String) {
+                            Toast.makeText(this@MainActivity,path,Toast.LENGTH_SHORT).show()
+                        }
+
                         override fun onSaveStart() {
 
                         }
-                        override fun onSaveSuccess(path: String?) {
-                            Toast.makeText(this@MainActivity,path,Toast.LENGTH_SHORT).show()
-                        }
+
 
                         override fun onSaveFail(msg: String?) {
                             Toast.makeText(this@MainActivity,msg,Toast.LENGTH_SHORT).show()
