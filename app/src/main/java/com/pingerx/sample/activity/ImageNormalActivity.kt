@@ -2,6 +2,7 @@ package com.pingerx.sample.activity
 
 import com.pingerx.imagego.core.strategy.loadImage
 import com.pingerx.sample.R
+import com.pingerx.sample.data.DataProvider
 import kotlinx.android.synthetic.main.activity_btn_normal.*
 
 /**
@@ -15,6 +16,6 @@ class ImageNormalActivity(override val layoutRes: Int = R.layout.activity_btn_no
     override fun isHomeAsUpEnabled(): Boolean = true
 
     override fun initView() {
-        loadImage("https://s.tysondata.com/team/images/20150304114502.gif", imageView, placeHolder = 0)
+        loadImage(DataProvider.getImageUrl(), imageView, placeHolder = 0)
     }
 }

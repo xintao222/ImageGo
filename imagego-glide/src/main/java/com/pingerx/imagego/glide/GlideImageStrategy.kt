@@ -49,6 +49,12 @@ import java.io.File
  */
 class GlideImageStrategy : ImageStrategy {
 
+    /**
+     * 返回自己
+     */
+    override fun getStrategy(): ImageStrategy {
+        return this
+    }
 
     /**
      * 获取默认的配置,可以手动配置
@@ -146,7 +152,7 @@ class GlideImageStrategy : ImageStrategy {
             return
         }
 
-        if(!ImageUtils.checkPermission(context,Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+        if (!ImageUtils.checkPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             listener?.onSaveFail(ImageConstant.SAVE_NOT_PERMISSION)
             return
         }
@@ -179,7 +185,7 @@ class GlideImageStrategy : ImageStrategy {
                         if (listener == null) {
                             ImageUtils.showToast(context, ImageConstant.SAVE_PATH + filePath, Toast.LENGTH_LONG)
                         } else {
-                            listener.onSaveSuccess(ImageUtils.getImageSavePath(context),suffix)
+                            listener.onSaveSuccess(ImageUtils.getImageSavePath(context), suffix)
                         }
                     } else {
                         listener?.onSaveFail(ImageConstant.SAVE_FAIL)

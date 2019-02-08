@@ -1,34 +1,27 @@
-# ImageGo(二次图片加载框架)
-[![](https://www.jitpack.io/v/PingerOne/ImageGo.svg)](https://www.jitpack.io/#PingerOne/ImageGo) |[中文文档](https://github.com/PingerOne/ImageGo/blob/master/README.md)|[EnglishDocument](https://github.com/PingerOne/ImageGo/blob/master/README_EN.md)
+# imagego(二次图片加载框架)
+ [ ![Download](https://api.bintray.com/packages/fungo/maven/imagego/images/download.svg) ](https://bintray.com/fungo/maven/imagego/_latestVersion)
+ 
+二次封装图片加载框架imagego。
 
-> 二次封装图片加载框架ImageGo。使用Kotlin语言编写，使用Androidx的API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
->
-> 这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。如果大家使用遇到什么问题，欢迎提交Issues。
+使用Kotlin语言编写，使用Androidx的API，支持随时替换底层加载框架Glide、Picasso和Fresco，支持加载带边框圆形、多方位圆角、高斯模糊等特效图片，支持使用进度条加载，GIF加载，保存图片到本地，获取图片缓存大小，清除图片缓存等多种功能。
+
+这个库是公司的业务衍生出来的，项目一直都在使用，遇到的问题基本都修复了，大部分的图片加载模式应该是可以满足的。
+
+如果大家使用遇到什么问题，欢迎提交Issues。
 
 
 ## 添加依赖
+* 如果需要自己定义加载策略，则添加以下依赖，然后实现ImageStrategy接口，重写加载图片的方法：
 
-1. 在项目根目录的build.gradle文件中添加jitpack仓库路径。
+      implementation 'com.pingerx:imagego-core:1.0.x'
 
-        allprojects {
-            repositories {
-                maven { url 'https://jitpack.io' }
-            }
-        }
+* 如果使用Glide加载图片，则添加依赖：
 
-2. 在app的build.gradle文件中引入仓库依赖。
+      implementation 'com.pingerx:imagego-glide:1.0.x'
 
-    * 如果需要自己定义加载策略，则添加以下依赖，然后实现ImageStrategy接口，重写加载图片的方法：
+* 如果使用Picasso加载图片，则添加依赖：
 
-          implementation 'com.github.PingerOne.ImageGo:imagego_core:x.x.x'
-
-    * 如果使用Glide加载图片，则添加依赖：
-
-          implementation 'com.github.PingerOne.ImageGo:imagego_glide:x.x.x'
-
-    * 如果使用Picasso加载图片，则添加依赖：
-
-          implementation 'com.github.PingerOne.ImageGo:imagego_picasso:x.x.x'
+      implementation 'com.pingerx:imagego-picasso:1.0.x'
 
 
 ## 使用方法

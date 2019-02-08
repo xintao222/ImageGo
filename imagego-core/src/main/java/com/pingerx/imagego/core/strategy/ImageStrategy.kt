@@ -19,6 +19,10 @@ import java.io.File
 
 interface ImageStrategy {
 
+    /**
+     * 内部获取策略模式
+     */
+    fun getStrategy(): ImageStrategy
 
     /**
      * 获取默认的图片配置

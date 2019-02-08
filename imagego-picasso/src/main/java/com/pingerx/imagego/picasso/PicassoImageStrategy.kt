@@ -43,6 +43,14 @@ import java.io.IOException
  */
 class PicassoImageStrategy : ImageStrategy {
 
+
+    /**
+     * 返回自己
+     */
+    override fun getStrategy(): ImageStrategy {
+        return this
+    }
+
     /**
      * 获取默认的配置,可以手动配置
      * 使用默认的加载和加载失败的占位图
