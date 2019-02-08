@@ -1,0 +1,64 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+
+android {
+
+    compileSdkVersion rootProject.ext.android.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.android.minSdkVersion
+        targetSdkVersion rootProject.ext.android.targetSdkVersion
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    compileOnly project(':imagego-core')
+    implementation rootProject.ext.dependencies.kotlin
+
+    // Glide依赖
+    implementation rootProject.ext.dependencies.glide
+    implementation rootProject.ext.dependencies.glide_okhttp3
+    kapt rootProject.ext.dependencies.glide_compiler
+}
+
+
+apply from: '../multiPublish.gradle'
+
+install {
+    repositories.mavenInstaller {
+        pom.project {
+            groupId rootProject.ext.groupId
+            artifactId "imagego-glide"
+            packaging 'aar'
+            name rootProject.ext.name
+            url rootProject.ext.siteUrl
+            licenses {
+                license {
+                    name 'The Apache Software License, Version 2.0'     // 开源协议名称
+                    url 'http://www.apache.org/licenses/LICENSE-2.0.txt' // 协议地址
+                }
+            }
+            developers {
+                developer {
+                    id 'pingerx'        // bintray的用户id
+                    name 'pingerx'      // bintray的用户名
+                    email 'xmpinger@gmail.com'
+                }
+            }
+            scm {
+                connection rootProject.ext.gitUrl
+                developerConnection rootProject.ext.gitUrl
+                url rootProject.ext.siteUrl
+            }
+        }
+    }
+}
