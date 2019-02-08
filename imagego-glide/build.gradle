@@ -31,7 +31,7 @@ dependencies {
 }
 
 
-apply from: '../multiPublish.gradle'
+apply from: '../publishs.gradle'
 
 install {
     repositories.mavenInstaller {

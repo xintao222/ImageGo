@@ -76,9 +76,7 @@ bintray {
 
 
 // 在具体的library的build.gradle中引入
-//apply from: '../multiPublish.gradle'
-
-//install {
+//apply from: '../publishs.gradle/install {
 //    repositories.mavenInstaller {
 //        pom.project {
 //            groupId rootProject.ext.groupId
