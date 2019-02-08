@@ -149,5 +149,5 @@ Name：Pinger
 Email：xmpinger@gmail.com
 
 ## License
-Apache 2.0，更多细节请查看[LICENSE](https://github.com/PingerOne/ImageGo/blob/master/LICENSE)。
+Apache 2.0，更多细节请查看[LICENSE](/LICENSE)。
 
