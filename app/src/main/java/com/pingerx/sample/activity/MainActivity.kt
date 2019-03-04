@@ -28,7 +28,6 @@ class MainActivity(override val layoutRes: Int = R.layout.activity_main) : BaseA
         setClickListener(btnNormal)
         setClickListener(btnGif)
         setClickListener(btnSave)
-
     }
 
     override fun onClick(v: View) {

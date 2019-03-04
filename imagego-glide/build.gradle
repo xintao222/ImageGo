@@ -21,12 +21,12 @@ android {
 }
 
 dependencies {
-    compileOnly project(':imagego-core')
     implementation rootProject.ext.dependencies.kotlin
 
+    api project(':imagego-core')
     // Glide依赖
-    implementation rootProject.ext.dependencies.glide
-    implementation rootProject.ext.dependencies.glide_okhttp3
+    api rootProject.ext.dependencies.glide
+    api rootProject.ext.dependencies.glide_okhttp3
     kapt rootProject.ext.dependencies.glide_compiler
 }
 

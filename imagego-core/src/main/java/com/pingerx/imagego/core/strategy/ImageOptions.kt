@@ -47,6 +47,11 @@ class ImageOptions private constructor() {
      */
     var skipMemoryCache: Boolean = false
 
+    /**
+     * 没有动画，默认是使用动画
+     */
+    var isDontAnim: Boolean = false
+
 
     /**
      * 磁盘缓存
@@ -138,18 +143,16 @@ class ImageOptions private constructor() {
 
         fun setPlaceHolderResId(placeHolderResId: Int): Builder {
             // 移除默认的配置
-            if (placeHolderResId == 0) {
-                config.placeHolderDrawable = null
+            if (placeHolderResId != 0) {
                 config.placeHolderResId = placeHolderResId
-            } else if (placeHolderResId == -1) {
-                config.placeHolderResId = 0
+                config.placeHolderDrawable = null
             }
             return this
         }
 
         fun setPlaceHolderDrawable(placeHolderDrawable: Drawable?): Builder {
-            config.placeHolderDrawable = placeHolderDrawable
             if (placeHolderDrawable != null) {
+                config.placeHolderDrawable = placeHolderDrawable
                 config.placeHolderResId = 0
             }
             return this
@@ -158,6 +161,7 @@ class ImageOptions private constructor() {
         fun setErrorResId(errorResId: Int): Builder {
             if (errorResId != 0) {
                 config.errorResId = errorResId
+                config.errorDrawable = null
             }
             return this
         }
@@ -268,6 +272,11 @@ class ImageOptions private constructor() {
             return this
         }
 
+
+        fun setDontAnim(isDontAnim: Boolean): Builder {
+            config.isDontAnim = isDontAnim
+            return this
+        }
 
         fun build(): ImageOptions {
             return config

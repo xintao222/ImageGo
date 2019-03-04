@@ -27,9 +27,10 @@ import java.io.File
  * @param options 图片加载配置项
  */
 
-fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHolder: Int = -1, options: ImageOptions? = null) {
+fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHolder: Int = 0, errorHolder: Int = 0, options: ImageOptions? = null) {
     val generateOptions = options ?: getDefaultBuilder()
             .setPlaceHolderResId(placeHolder)
+            .setErrorResId(errorHolder)
             .build()
     getStrategy().loadImage(any, view, listener, generateOptions)
 }
@@ -40,10 +41,11 @@ fun loadImage(any: Any?, view: View?, listener: OnImageListener? = null, placeHo
  * @param view 展示的View
  * @param listener 监听加载对象
  */
-fun loadGif(any: Any?, view: View?, placeHolder: Int = -1, listener: OnImageListener? = null) {
+fun loadGif(any: Any?, view: View?, placeHolder: Int = 0, errorHolder: Int = 0, listener: OnImageListener? = null) {
     loadImage(any, view, listener = listener, options = getDefaultBuilder()
             .setAutoGif(true)
             .setPlaceHolderResId(placeHolder)
+            .setErrorResId(errorHolder)
             .build())
 }
 
@@ -95,11 +97,12 @@ fun loadBitmap(context: Context?, any: Any?): Bitmap? {
  * @param borderColor　边框的颜色
  * @param listener　加载回调
  */
-fun loadCircle(any: Any?, view: View?, borderWidth: Int = 0, borderColor: Int = 0, placeHolder: Int = -1, listener: OnImageListener? = null) {
+fun loadCircle(any: Any?, view: View?, borderWidth: Int = 0, borderColor: Int = 0, placeHolder: Int = 0, errorHolder: Int = 0, listener: OnImageListener? = null) {
     loadImage(any, view, listener = listener, options = getDefaultBuilder()
             .setCrossFade(false)
             .setCircle(true)
             .setPlaceHolderResId(placeHolder)
+            .setErrorResId(errorHolder)
             .setCircleBorderColor(borderColor)
             .setCircleBorderWidth(borderWidth).build())
 }
@@ -115,10 +118,11 @@ fun loadCircle(any: Any?, view: View?, borderWidth: Int = 0, borderColor: Int = 
  * @param roundType　圆角图片的边向
  * @param listener 回调
  */
-fun loadRound(any: Any?, view: View?, roundRadius: Int = 12, roundType: RoundType = RoundType.ALL, placeHolder: Int = -1, listener: OnImageListener? = null) {
+fun loadRound(any: Any?, view: View?, roundRadius: Int = 12, roundType: RoundType = RoundType.ALL, placeHolder: Int = 0, errorHolder: Int = 0, listener: OnImageListener? = null) {
     loadImage(any, view, listener = listener, options = getDefaultBuilder()
             .setCrossFade(false)
             .setPlaceHolderResId(placeHolder)
+            .setErrorResId(errorHolder)
             .setRoundedCorners(true)
             .setRoundRadius(roundRadius)
             .setRoundType(roundType).build())
@@ -136,10 +140,11 @@ fun loadRound(any: Any?, view: View?, roundRadius: Int = 12, roundType: RoundTyp
  * @param blurSampling　高斯模糊的半徑
  * @param listener 回调
  */
-fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1, placeHolder: Int = -1, listener: OnImageListener? = null) {
+fun loadBlur(any: Any?, view: View?, blurRadius: Int = 25, blurSampling: Int = 1, placeHolder: Int = 0, errorHolder: Int = 0, listener: OnImageListener? = null) {
     loadImage(any, view, listener = listener, options = getDefaultBuilder()
             .setBlur(true)
             .setPlaceHolderResId(placeHolder)
+            .setErrorResId(errorHolder)
             .setBlurSampling(blurSampling)
             .setBlurRadius(blurRadius).build())
 }

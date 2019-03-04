@@ -107,7 +107,7 @@ class GlideImageStrategy : ImageStrategy {
                         .asBitmap()
                         .load(any)
                         .apply(RequestOptions().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-                        .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
+                        .submit(com.bumptech.glide.request.target.Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL)
                         .get()
                 ImageUtils.runOnUIThread(Runnable {
                     listener.onSuccess(bitmap)
@@ -274,7 +274,7 @@ class GlideImageStrategy : ImageStrategy {
      */
     override fun loadImage(any: Any?, view: View?, listener: OnImageListener?, options: ImageOptions) {
         // any和view判空
-        if (any == null || view == null) {
+        if (view == null) {
             listener?.onFail(ImageConstant.LOAD_NULL_ANY_VIEW)
             ImageUtils.logD(ImageConstant.LOAD_NULL_ANY_VIEW)
             return
@@ -321,7 +321,7 @@ class GlideImageStrategy : ImageStrategy {
      * 设置bitmap属性
      */
     @SuppressLint("CheckResult")
-    private fun buildBitmap(context: Context, obj: Any, options: ImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
+    private fun buildBitmap(context: Context, obj: Any?, options: ImageOptions, bitmapBuilder: RequestBuilder<Bitmap>, listener: OnImageListener?): RequestBuilder<Bitmap> {
         var builder = bitmapBuilder
         // 渐变展示
         if (options.isCrossFade) {
@@ -359,7 +359,7 @@ class GlideImageStrategy : ImageStrategy {
      * 设置Gift属性
      */
     @SuppressLint("CheckResult")
-    private fun buildGift(context: Context, obj: Any, options: ImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
+    private fun buildGift(context: Context, obj: Any?, options: ImageOptions, gifBuilder: RequestBuilder<GifDrawable>, listener: OnImageListener?): RequestBuilder<GifDrawable> {
         var builder = gifBuilder
 
         // 缩略图大小
@@ -393,7 +393,7 @@ class GlideImageStrategy : ImageStrategy {
      * 设置图片加载选项，返回请求对象
      */
     @SuppressLint("CheckResult")
-    private fun buildOptions(view: View, context: Context, obj: Any, options: ImageOptions): RequestOptions {
+    private fun buildOptions(view: View, context: Context, obj: Any?, options: ImageOptions): RequestOptions {
         val reqOptions = RequestOptions()
 
         // 设置缓存策略，设置缓存策略要先判断是否有读写权限，如果没有权限，但是又设置了缓存策略则会加载失败
@@ -421,19 +421,25 @@ class GlideImageStrategy : ImageStrategy {
         }
         reqOptions.priority(priority)
 
-
         // 内存缓存跳过
         reqOptions.skipMemoryCache(options.skipMemoryCache)
 
-        // 占位图
-        when {
-            // 加载中占位图
-            options.placeHolderResId != 0 -> reqOptions.placeholder(options.placeHolderResId)
-            // 统一设置drawable占位图
-            options.placeHolderDrawable != null -> reqOptions.placeholder(options.placeHolderDrawable).error(options.placeHolderDrawable)
-            // 这里加载错误和链接为null都设置相同的占位图
-            options.errorResId != 0 -> reqOptions.error(options.errorResId).fallback(options.errorResId)
-            options.errorDrawable != null -> reqOptions.error(options.errorDrawable).fallback(options.errorDrawable)
+        // 加载中占位图
+        if (options.placeHolderResId != 0) {
+            reqOptions.placeholder(options.placeHolderResId)
+        } else if (options.placeHolderDrawable != null) {
+            reqOptions.placeholder(options.placeHolderDrawable)
+        }
+        // 加载错误和链接为null都设置相同的占位图
+        if (options.errorResId != 0) {
+            reqOptions.error(options.errorResId)
+        } else if (options.errorDrawable != null) {
+            reqOptions.error(options.errorDrawable)
+        }
+
+        // 无动画
+        if (options.isDontAnim) {
+            reqOptions.dontAnimate()
         }
 
         // Tag
@@ -473,7 +479,7 @@ class GlideImageStrategy : ImageStrategy {
             if (transformation == null) {
                 reqOptions.transform(RoundedCornersTransformation(options.roundRadius, options.roundType))
             } else {
-                reqOptions.transforms(transformation, RoundedCornersTransformation(options.roundRadius, options.roundType))
+                reqOptions.transform(transformation, RoundedCornersTransformation(options.roundRadius, options.roundType))
             }
         }
         return reqOptions

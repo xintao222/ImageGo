@@ -20,11 +20,11 @@ android {
 }
 
 dependencies {
-    compileOnly project(':imagego-core')
     implementation rootProject.ext.dependencies.kotlin
 
+    api project(':imagego-core')
     // Picasso依赖
-    implementation rootProject.ext.dependencies.picasso
+    api rootProject.ext.dependencies.picasso
 }
 
 

@@ -16,6 +16,6 @@ class ImageNormalActivity(override val layoutRes: Int = R.layout.activity_btn_no
     override fun isHomeAsUpEnabled(): Boolean = true
 
     override fun initView() {
-        loadImage(DataProvider.getImageUrl(), imageView, placeHolder = 0)
+        loadImage(DataProvider.getImageUrl(), imageView)
     }
 }
